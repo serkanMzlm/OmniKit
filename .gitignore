@@ -1,0 +1,7 @@
+build/**
+intsall/**
+log/**
+.vscode/**
+
+src/vl53l5cx/include/vl53l5cx/**
+src/vl53l5cx/src/vl53l5cx/**
