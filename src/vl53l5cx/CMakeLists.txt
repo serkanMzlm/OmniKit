@@ -8,17 +8,43 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(Boost REQUIRED system)
+find_package(OpenCV REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(PCL 1.3 REQUIRED)
+find_package(pcl_ros REQUIRED )
+find_package(pcl_conversions REQUIRED )
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+file(GLOB_RECURSE MY_SOURCE 
+    ${PROJECT_SOURCE_DIR}/src/*.cpp 
+    ${PROJECT_SOURCE_DIR}/src/vl53l5cx/*.c
+    )
+
+include_directories(${PROJECT_SOURCE_DIR}/inc/vl53l5cx)
+include_directories(${PROJECT_SOURCE_DIR}/inc)
+
+add_executable(vl53l5cx_node ${MY_SOURCE})
+
+ament_target_dependencies(vl53l5cx_node
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  Boost
+  visualization_msgs
+  OpenCV
+  tf2_ros
+  PCL
+  pcl_ros
+  pcl_conversions
+)
+
+install(TARGETS
+  vl53l5cx_node
+  DESTINATION 
+  lib/${PROJECT_NAME}  
+)
 
 ament_package()
