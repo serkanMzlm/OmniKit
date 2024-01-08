@@ -202,3 +202,10 @@ void MPU6050::setAccOffset(double* offset){
 void MPU6050::reportError(int error) { 
 	std::cerr << "Error! Errno: " << strerror(error); 
 }
+
+int main(){
+
+	MPU6050 mpu6050;
+	mpu6050.printOffsets();
+	return 0;
+}
