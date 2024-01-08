@@ -11,8 +11,7 @@ extern "C" {
 }
 
 MPU6050::MPU6050(int bus_number){
-    filename[9] = *std::to_string(bus_number).c_str();
-	std::cout << filename << "__" << std::endl;
+    strcat(filename, std::to_string(bus_number).c_str());
     if(initI2c(filename, MPU6050_ADDR) < 0){
         exit(1);
     }
@@ -200,6 +199,28 @@ void MPU6050::setAccOffset(double* offset){
   acc_offset[Z] = offset[Z];
 }
 
+void MPU6050::calibrate(){
+  int count = 0;
+  while (count < COUNT) {
+    gyro_offset[X] += getAngularVelocityX();
+    gyro_offset[Y] += getAngularVelocityY();
+    gyro_offset[Z] += getAngularVelocityZ();
+    acc_offset[X] += getAccelerationX();
+    acc_offset[Y] += getAccelerationY();
+    acc_offset[Z] += getAccelerationZ();
+    ++count;
+  }
+  gyro_offset[X] /= COUNT;
+  gyro_offset[Y] /= COUNT;
+  gyro_offset[Z] /= COUNT;
+  acc_offset[X] /= COUNT;
+  acc_offset[Y] /= COUNT;
+  acc_offset[Z] /= COUNT;
+//   acc_offset[Z] -= 1;
+  acc_offset[Z] -= GRAVITY;
+  calibrated = true;
+}
+
 void MPU6050::reportError(int error) { 
 	std::cerr << "Error! Errno: " << strerror(error); 
 }
@@ -208,5 +229,6 @@ int main(){
 
 	MPU6050 mpu6050(1);
 	mpu6050.printOffsets();
+	mpu6050.printConfig();
 	return 0;
 }

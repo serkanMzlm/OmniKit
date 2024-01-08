@@ -36,7 +36,7 @@ public:
 
     void printConfig() const;
     void printOffsets() const;
-
+    void calibrate();
     void setGyroOffset(double* offset);
     void setAccOffset(double* offset);
 private:
@@ -55,4 +55,4 @@ private:
     const std::unordered_map<int, double> gyro_map{{250, 131}, {500, 65.5}, {1000, 32.8}, {2000, 16.4}};
 };
 
-#endif
+#endif  
