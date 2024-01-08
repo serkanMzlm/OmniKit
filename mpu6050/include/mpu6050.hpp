@@ -12,6 +12,9 @@ class MPU6050{
 public:
     MPU6050(int bus_number = 1);
     ~MPU6050();
+    int initI2c(char* filename, int mpu_addr);
+    void reportError(int error);
+
     int readGyroscopeRange();
     int readAccelerometerRange();
     int readDlpfConfig();
@@ -34,6 +37,8 @@ public:
     void printConfig() const;
     void printOffsets() const;
 
+    void setGyroOffset(double* offset);
+    void setAccOffset(double* offset);
 private:
     int fd;
     bool calibrated = false;

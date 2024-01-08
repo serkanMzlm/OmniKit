@@ -12,19 +12,36 @@ extern "C" {
 
 MPU6050::MPU6050(int bus_number){
     filename[9] = *std::to_string(bus_number).c_str();
-    if(i2c_init(filename, MPU6050_ADDR) < 0){
+    if(initI2c(filename, MPU6050_ADDR) < 0){
         exit(1);
     }
-    if(i2c_smbus_write(fd, PWR_MGMT_1, 0) < 0){
+
+	int result = i2c_smbus_write_byte_data(fd, PWR_MGMT_1, 0);
+    if(result < 0){
         exit(1);
     }
+
     readGyroscopeRange();
     readAccelerometerRange();
     readDlpfConfig();
 }
 
 MPU6050::~MPU6050(){
-    i2c_close(fd);
+    close(fd);
+}
+
+int MPU6050::initI2c(char* filename, int mpu_addr){
+	fd = open(filename, O_RDWR);
+	if(fd < 0){
+        perror("Could not open the I2C device");
+		return -1;
+	}
+	if(ioctl(fd, I2C_SLAVE, mpu_addr) < 0){
+        perror("Could not set I2C device address");
+        close(fd);
+		return -1;
+	}
+	return 1;
 }
 
 void MPU6050::printConfig() const{
@@ -41,8 +58,8 @@ void MPU6050::printOffsets() const{
 }
 
 int MPU6050::readGyroscopeRange(){
-    int result;
-    if(i2c_smbus_read(fd, GYRO_CONFIG_REG, &result) < 0){
+    int result = i2c_smbus_read_byte_data(fd, GYRO_CONFIG_REG);
+    if(result < 0){
         exit(1);
     }
     result = result >> 3;
@@ -51,8 +68,8 @@ int MPU6050::readGyroscopeRange(){
 }
 
 int MPU6050::readAccelerometerRange(){
-    int result;
-    if(i2c_smbus_read(fd, ACC_CONFIG_REG, &result) < 0){
+    int result = i2c_smbus_read_byte_data(fd, ACC_CONFIG_REG);
+    if(result < 0){
         exit(1);
     }
     result = result >> 3;
@@ -61,8 +78,8 @@ int MPU6050::readAccelerometerRange(){
 }
 
 int MPU6050::readDlpfConfig(){
-    int result;
-    if(i2c_smbus_read(fd, DLPF_CONFIG_REG, &result) < 0){
+    int result = i2c_smbus_read_byte_data(fd, DLPF_CONFIG_REG);
+    if(result < 0){
         exit(1);
     }
     result = result >> 3;
@@ -93,7 +110,7 @@ double MPU6050::getAccelerationX() const
   int16_t acc_x_h = i2c_smbus_read_byte_data(fd, ACC_X_H);
   int16_t acc_x_l = i2c_smbus_read_byte_data(fd, ACC_X_H + 1);
   int16_t acc_x = acc_x_l | acc_x_h << 8;
-  double accel_x_converted = convertRawAccData(accel_x);
+  double accel_x_converted = convertRawAccData(acc_x);
   if (calibrated) {
     return accel_x_converted - acc_offset[X];
   }
@@ -180,4 +197,8 @@ void MPU6050::setAccOffset(double* offset){
   acc_offset[X] = offset[X];
   acc_offset[Y] = offset[Y];
   acc_offset[Z] = offset[Z];
+}
+
+void MPU6050::reportError(int error) { 
+	std::cerr << "Error! Errno: " << strerror(error); 
 }
