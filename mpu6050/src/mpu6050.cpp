@@ -13,6 +13,7 @@ extern "C" {
 MPU6050::MPU6050(int bus_number){
     filename[9] = *std::to_string(bus_number).c_str();
     if(initI2c(filename, MPU6050_ADDR) < 0){
+		std::cout << filename << std::endl;
         exit(1);
     }
 
@@ -205,7 +206,7 @@ void MPU6050::reportError(int error) {
 
 int main(){
 
-	MPU6050 mpu6050;
+	MPU6050 mpu6050(1);
 	mpu6050.printOffsets();
 	return 0;
 }
