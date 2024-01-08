@@ -2,7 +2,7 @@
 // mpu6050.c dosyası
 
 #include "mpu6050.hpp"
-
+#include <iomanip>
 extern "C" {
 #include <errno.h>
 #include <fcntl.h>
@@ -203,17 +203,31 @@ void MPU6050::setAccOffset(double* offset){
 }
 
 void MPU6050::calibrate(){
-  int count = 0;
-  while (count < COUNT) {
+  for(int i = 0; i <= COUNT; ++i){
     gyro_offset[X] += getAngularVelocityX();
     gyro_offset[Y] += getAngularVelocityY();
     gyro_offset[Z] += getAngularVelocityZ();
     acc_offset[X] += getAccelerationX();
     acc_offset[Y] += getAccelerationY();
     acc_offset[Z] += getAccelerationZ();
-    ++count;
-	std::cout << "____" << std::endl;
+	usleep(250);
+
+	float percentage = static_cast<float>(i) / COUNT * 100.0; 
+	std::cout << "\r" << "|";
+	int pos = barWidth * percentage / 100.0;
+	for (int j = 0; j < barWidth; ++j) {
+		if (j < pos) {
+			std::cout << "█";
+		} else {
+			std::cout << ".";
+		}
+	}
+	std::cout << "| " << i << "/" << COUNT << " [" << std::fixed << 
+                                        std::setprecision(2) << percentage << "%]";
+	std::flush(std::cout);
   }
+  std::cout << std::endl;
+
   gyro_offset[X] /= COUNT;
   gyro_offset[Y] /= COUNT;
   gyro_offset[Z] /= COUNT;
@@ -230,9 +244,7 @@ void MPU6050::reportError(int error) {
 }
 
 int main(){
-
 	MPU6050 mpu6050(1);
-	mpu6050.printOffsets();
-	mpu6050.printConfig();
+	mpu6050.calibrate();
 	return 0;
 }

@@ -20,7 +20,7 @@
 #define MPU6050_ADDR (0x68)
 
 #define GRAVITY  (9.81f)
-#define COUNT  200
+#define COUNT  2000
 
 typedef enum { 
     ACC_2_G, ACC_4_G, 

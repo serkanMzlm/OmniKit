@@ -43,6 +43,7 @@ public:
     void setAccOffset(double* offset);
 private:
     int fd;
+    int barWidth = 50;
     bool calibrated = false;
     int ranges[R_ALL] = {2, 250, 260};
     double gyro_offset[C_ALL] = {0.0, 0.0, 0.0};
