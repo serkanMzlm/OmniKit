@@ -12,8 +12,8 @@ extern "C" {
 
 MPU6050::MPU6050(int bus_number){
     filename[9] = *std::to_string(bus_number).c_str();
+	std::cout << filename << "__" << std::endl;
     if(initI2c(filename, MPU6050_ADDR) < 0){
-		std::cout << filename << std::endl;
         exit(1);
     }
 
