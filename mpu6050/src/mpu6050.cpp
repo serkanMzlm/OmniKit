@@ -1,3 +1,6 @@
+
+// mpu6050.c dosyası
+
 #include "mpu6050.hpp"
 
 extern "C" {
@@ -11,7 +14,7 @@ extern "C" {
 }
 
 MPU6050::MPU6050(int bus_number){
-    strcat(filename, std::to_string(bus_number).c_str());
+	sprintf(filename, "/dev/i2c-%d", bus_number);
     if(initI2c(filename, MPU6050_ADDR) < 0){
         exit(1);
     }
@@ -30,7 +33,7 @@ MPU6050::~MPU6050(){
     close(fd);
 }
 
-int MPU6050::initI2c(char* filename, int mpu_addr){
+int MPU6050::initI2c(const char* filename, int mpu_addr){
 	fd = open(filename, O_RDWR);
 	if(fd < 0){
         perror("Could not open the I2C device");
@@ -209,6 +212,7 @@ void MPU6050::calibrate(){
     acc_offset[Y] += getAccelerationY();
     acc_offset[Z] += getAccelerationZ();
     ++count;
+	std::cout << "____" << std::endl;
   }
   gyro_offset[X] /= COUNT;
   gyro_offset[Y] /= COUNT;

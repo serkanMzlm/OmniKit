@@ -1,3 +1,7 @@
+
+// mpu6050_type.hpp dosyası
+
+
 #ifndef __MPU6050_TYPE_HPP__
 #define __MPU6050_TYPE_HPP__
 

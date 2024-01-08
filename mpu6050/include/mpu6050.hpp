@@ -1,3 +1,6 @@
+
+// mpu6050.hpp dosyası
+
 #ifndef __MPU6050_HPP__
 #define __MPU6050_HPP__
 
@@ -5,14 +8,13 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "mpu6050.hpp"
 #include "mpu6050_type.hpp"
 
 class MPU6050{
 public:
     MPU6050(int bus_number = 1);
     ~MPU6050();
-    int initI2c(char* filename, int mpu_addr);
+    int initI2c(const char* filename, int mpu_addr);
     void reportError(int error);
 
     int readGyroscopeRange();
@@ -45,7 +47,7 @@ private:
     int ranges[R_ALL] = {2, 250, 260};
     double gyro_offset[C_ALL] = {0.0, 0.0, 0.0};
     double acc_offset[C_ALL] = {0.0, 0.0, 0.0};
-    char filename[10] = "/dev/i2c-";
+    char filename[10];
 
     const std::array<int, 4> accel_ranges{2, 4, 8, 16};
     const std::array<int, 4> gyro_ranges{250, 500, 1000, 2000};
