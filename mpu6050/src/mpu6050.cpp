@@ -217,7 +217,7 @@ void MPU6050::calibrate(){
 	int pos = barWidth * percentage / 100.0;
 	for (int j = 0; j < barWidth; ++j) {
 		if (j < pos) {
-			std::cout << "█";
+			std::cout << "#";
 		} else {
 			std::cout << ".";
 		}
