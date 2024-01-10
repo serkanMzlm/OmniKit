@@ -242,9 +242,3 @@ void MPU6050::calibrate(){
 void MPU6050::reportError(int error) { 
 	std::cerr << "Error! Errno: " << strerror(error); 
 }
-
-int main(){
-	MPU6050 mpu6050(1);
-	mpu6050.calibrate();
-	return 0;
-}
