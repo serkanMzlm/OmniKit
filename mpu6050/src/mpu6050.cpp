@@ -14,7 +14,7 @@ extern "C" {
 }
 
 MPU6050::MPU6050(int bus_number){
-	sprintf(filename, "/dev/i2c-%d", bus_number);
+	snprintf(filename, 11, "/dev/i2c-%d", bus_number);
     if(initI2c(filename, MPU6050_ADDR) < 0){
         exit(1);
     }

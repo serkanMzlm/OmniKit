@@ -48,7 +48,7 @@ private:
     int ranges[R_ALL] = {2, 250, 260};
     double gyro_offset[C_ALL] = {0.0, 0.0, 0.0};
     double acc_offset[C_ALL] = {0.0, 0.0, 0.0};
-    char filename[10];
+    char filename[11];
 
     const std::array<int, 4> accel_ranges{2, 4, 8, 16};
     const std::array<int, 4> gyro_ranges{250, 500, 1000, 2000};
