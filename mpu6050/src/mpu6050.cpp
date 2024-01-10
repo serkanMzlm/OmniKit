@@ -1,6 +1,3 @@
-
-// mpu6050.c dosyası
-
 #include "mpu6050.hpp"
 #include <iomanip>
 extern "C" {
@@ -14,13 +11,8 @@ extern "C" {
 }
 
 MPU6050::MPU6050(int bus_number){
-	sprintf(filename, "/dev/i2c-%d", bus_number);
+	snprintf(filename, 11, "/dev/i2c-%d", bus_number);
     if(initI2c(filename, MPU6050_ADDR) < 0){
-        exit(1);
-    }
-
-	int result = i2c_smbus_write_byte_data(fd, PWR_MGMT_1, 0);
-    if(result < 0){
         exit(1);
     }
 
@@ -36,28 +28,19 @@ MPU6050::~MPU6050(){
 int MPU6050::initI2c(const char* filename, int mpu_addr){
 	fd = open(filename, O_RDWR);
 	if(fd < 0){
-        perror("Could not open the I2C device");
+		reportError(errno, "Could not open the I2C device");
 		return -1;
 	}
 	if(ioctl(fd, I2C_SLAVE, mpu_addr) < 0){
-        perror("Could not set I2C device address");
+		reportError(errno, "Could not set I2C device addres");
         close(fd);
 		return -1;
 	}
+  	if(i2c_smbus_write_byte_data(fd, PWR_MGMT_1, 0) < 0){
+		reportError(errno, "Unable to write PWR_MGMT_1");
+		return -1;
+ 	}
 	return 1;
-}
-
-void MPU6050::printConfig() const{
-    std::cout << "Accelerometer Range: +-" << ranges[ACC_R] << "g\n";
-    std::cout << "Gyroscope Range: +-" << ranges[GYR_R] << " degree per sec\n";
-    std::cout << "DLPF Range: " << ranges[DLPF_R] << " Hz\n";
-}
-
-void MPU6050::printOffsets() const{
-    std::cout << "Accelerometer Offsets: x: " << acc_offset[X] << ", y: " << acc_offset[Y]
-            << ", z: " << acc_offset[Z] << "\n";
-    std::cout << "Gyroscope Offsets: x: " << gyro_offset[X] << ", y: " << gyro_offset[Y]
-            << ", z: " << gyro_offset[Z] << "\n";
 }
 
 int MPU6050::readGyroscopeRange(){
@@ -239,8 +222,21 @@ void MPU6050::calibrate(){
   calibrated = true;
 }
 
-void MPU6050::reportError(int error) { 
-	std::cerr << "Error! Errno: " << strerror(error); 
+void MPU6050::printConfig() const{
+    std::cout << "Accelerometer Range: +-" << ranges[ACC_R] << "g\n";
+    std::cout << "Gyroscope Range: +-" << ranges[GYR_R] << " degree per sec\n";
+    std::cout << "DLPF Range: " << ranges[DLPF_R] << " Hz\n";
+}
+
+void MPU6050::printOffsets() const{
+    std::cout << "Accelerometer Offsets: x: " << acc_offset[X] << ", y: " << acc_offset[Y]
+            << ", z: " << acc_offset[Z] << "\n";
+    std::cout << "Gyroscope Offsets: x: " << gyro_offset[X] << ", y: " << gyro_offset[Y]
+            << ", z: " << gyro_offset[Z] << "\n";
+}
+
+void MPU6050::reportError(int error, std::string error_info) { 
+	std::cerr << "Error! " << error_info << " : " << strerror(error); 
 }
 
 int main(){
