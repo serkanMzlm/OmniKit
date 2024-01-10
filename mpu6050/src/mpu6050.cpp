@@ -235,12 +235,16 @@ void MPU6050::printOffsets() const{
             << ", z: " << gyro_offset[Z] << "\n";
 }
 
-void MPU6050::reportError(int error, std::string error_info) { 
-	std::cerr << "Error! " << error_info << " : " << strerror(error); 
+void MPU6050::printAccData() const{
+  	std::cout << "Acc_x: " << getAccelerationX() << " Acc_y: " << getAccelerationY()
+                                               << " Acc_z: " << getAccelerationZ() << std::endl;
 }
 
-int main(){
-	MPU6050 mpu6050(1);
-	mpu6050.calibrate();
-	return 0;
+void MPU6050::printGyroData() const{
+  	std::cout << "Gyro_x: " << getAngularVelocityX() << " Gyro_y: " << getAngularVelocityY()
+                                               << " Gyro_z: " << getAngularVelocityZ() << std::endl;
+}
+
+void MPU6050::reportError(int error, std::string error_info) { 
+	std::cerr << "Error! " << error_info << " : " << strerror(error); 
 }

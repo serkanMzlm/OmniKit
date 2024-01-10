@@ -38,6 +38,8 @@ public:
 
     void printConfig() const;
     void printOffsets() const;
+    void printAccData() const;
+    void printGyroData() const;
     void reportError(int error, std::string error_info = "Errno");
 
 private:
