@@ -10,6 +10,7 @@ int main(){
     for(int i = 0; i < 100; i++){
         mpu6050.cleanTerminal();
         mpu6050.printAcceleration();
+        mpu6050.printAngularVelocity();
         usleep(10000);
     }
 }

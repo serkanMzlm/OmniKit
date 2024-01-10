@@ -216,7 +216,7 @@ void MPU6050::printOffsets() const{
 }
 
 void MPU6050::cleanTerminal() const {
-	std::cout << "\033[4A";
+	std::cout << "\033[8A";
 }
 
 void MPU6050::printAcceleration() const {
