@@ -1,13 +1,9 @@
-
-// mpu6050_type.hpp dosyası
-
-
 #ifndef __MPU6050_TYPE_HPP__
 #define __MPU6050_TYPE_HPP__
 
-#define DLPF_CONFIG_REG (0x1A)
-#define GYRO_CONFIG_REG (0x1B)
-#define ACC_CONFIG_REG (0x1C)
+#define DLPF_CONFIG (0x1A)
+#define GYRO_CONFIG (0x1B)
+#define ACC_CONFIG (0x1C)
 
 #define ACC_X_H (0x3B) 
 #define ACC_Y_H (0x3D)
@@ -28,8 +24,8 @@ typedef enum {
 }AccelRange;
 
 typedef enum { 
-    GYR_250_DEG_S, GYR_500_DEG_S, 
-    GYR_1000_DEG_S, GYR_2000_DEG_S 
+    GYR_250_DPS, GYR_500_DPS, 
+    GYR_1000_DPS, GYR_2000_DPS 
 }GyroRange;
 
 typedef enum {

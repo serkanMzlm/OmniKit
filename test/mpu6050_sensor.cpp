@@ -1,6 +1,14 @@
 #include "mpu6050.hpp"
+extern "C"{
+#include <unistd.h>
+}
 
 int main(){
     MPU6050 mpu6050;
     mpu6050.calibrate();
+    for(int i = 0; i < 100; i++){
+        mpu6050.cleanTerminal();
+        mpu6050.printAcceleration();
+        usleep(10000);
+    }
 }
