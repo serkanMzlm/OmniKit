@@ -20,6 +20,7 @@ public:
     ~VL53L5CX();
     int init();
     void getRange();
+    void getVisualRange();
     void reportError(int error, std::string error_info = "Errno");
 private:
     VL53L5CX_Configuration dev;
