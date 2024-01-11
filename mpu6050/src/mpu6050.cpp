@@ -149,7 +149,7 @@ double MPU6050::convertRawAccData(int16_t gyro_raw) const {
 }
 
 double MPU6050::convertRawGyroData(int16_t accel_raw) const {
-    const double accel = static_cast<double>(accel_raw) / accel_map.at(ranges[ACC_R]) * GRAVITY;
+    const double accel = static_cast<double>(accel_raw) / accel_map.at(ranges[ACC_R]) /* * GRAVITY */;
     return accel; // (m/s^2)
 }
 
@@ -197,8 +197,8 @@ void MPU6050::calibrate(){
 	acc_offset[X] /= COUNT;
 	acc_offset[Y] /= COUNT;
 	acc_offset[Z] /= COUNT;
-	//   acc_offset[Z] -= 1;
-	acc_offset[Z] -= GRAVITY;
+	acc_offset[Z] -= 1;
+	// acc_offset[Z] -= GRAVITY;
 	calibrated = true;
 }
 
@@ -220,7 +220,6 @@ void MPU6050::cleanTerminal() const {
 }
 
 void MPU6050::printAcceleration() const {
-    // std::cout << 
 	std::cout << "Acc\n";
 	std::cout << "X: " << getAccelerationX() << "\n";
 	std::cout << "Y: " << getAccelerationY() << "\n";
