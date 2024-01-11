@@ -143,14 +143,15 @@ double MPU6050::getAngularVelocityZ() const {
 	return gyro_z_converted;
 }
 
-double MPU6050::convertRawAccData(int16_t gyro_raw) const {
-    const double ang_vel = static_cast<double>(gyro_raw) / gyro_map.at(ranges[GYR_R]);
-    return ang_vel; //angular velocity (deg/s)
+
+double MPU6050::convertRawGyroData(int16_t gyro_raw) const {
+    const double gyro = static_cast<double>(gyro_raw) / gyro_map.at(ranges[GYR_R]) ;
+    return gyro; //angular velocity (deg/s) 
 }
 
-double MPU6050::convertRawGyroData(int16_t accel_raw) const {
-    const double accel = static_cast<double>(accel_raw) / accel_map.at(ranges[ACC_R]) /* * GRAVITY */;
-    return accel; // (m/s^2)
+double MPU6050::convertRawAccData(int16_t accel_raw) const {
+    const double acc = static_cast<double>(accel_raw) /accel_map.at(ranges[ACC_R])/* * GRAVITY */;
+    return acc; // (m/s^2)
 }
 
 void MPU6050::setGyroOffset(double* offset){
@@ -173,7 +174,7 @@ void MPU6050::calibrate(){
 		acc_offset[X] += getAccelerationX();
 		acc_offset[Y] += getAccelerationY();
 		acc_offset[Z] += getAccelerationZ();
-		usleep(250);
+		usleep(200);
 
 		float percentage = static_cast<float>(i) / COUNT * 100.0; 
 		std::cout << "\r" << "|";
