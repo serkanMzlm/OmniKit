@@ -3,16 +3,16 @@
 #include <unistd.h>
 #include <signal.h>
 
-// Ctrl+C sinyali alındığında çalışacak işlev
 void handleCtrlC(int signum) {
-    std::cout << "Ctrl+C tuş kombinasyonu alındı. Program sonlandırılıyor." << std::endl;
+    std::cout << "Ctrl+C program terminated" << std::endl;
     exit(signum);
 }
 
 int main() {
     MPU6050 mpu6050;
-
-    std::cout << "\n\n\n\n\n\n\n\n\n";
+    for(int i = 0; i < 10; i++) {
+        std::cout << "\n";
+    }
 
     signal(SIGINT, handleCtrlC);
 
