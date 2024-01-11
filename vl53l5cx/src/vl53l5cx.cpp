@@ -57,27 +57,27 @@ void VL53L5CX::getVisualRange(){
         for(int a = 0; a < 64; a++){
 			if(a % 8 == 0) std::cout << "\n";
             if(Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] < 300){
-                std::cout << RED_STRIPE << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << RESET;
+                std::cout << RED_STRIPE <<  std::setw(6) << 
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << RESET;
             }else if(Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] < 600){
-                std::cout << MAGENTA_STRIPE << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << RESET;
+                std::cout << MAGENTA_STRIPE <<  std::setw(6) << 
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << RESET;
             }
             else if(Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] < 900){
-                std::cout << YELLOW_STRIPE << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << RESET;
+                std::cout << YELLOW_STRIPE <<  std::setw(6) << 
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << RESET;
             }
             else if(Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] < 1200){
-                std::cout << GREEN_STRIPE << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << RESET;
+                std::cout << GREEN_STRIPE <<  std::setw(6) << 
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << RESET;
             }
             else if(Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] < 1400){
-                std::cout << CYAN_STRIPE << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << RESET;
+                std::cout << CYAN_STRIPE <<  std::setw(6) << 
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << RESET;
             }
             else {
-                std::cout << BLUE_STRIPE << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << RESET;
+                std::cout << BLUE_STRIPE <<  std::setw(6) << 
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << RESET;
             }
             
 		}

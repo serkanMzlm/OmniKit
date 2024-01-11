@@ -11,11 +11,11 @@ void handleCtrlC(int signum) {
 
 int main(){
     VL53L5CX vl53l5cx;
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 12; i++) {
         std::cout << "\n";
     }
     while (true) {
-        vl53l5cx.getRange();
+        vl53l5cx.getVisualRange();
         usleep(10000);
         std::cout << "\033[8A";
     }
