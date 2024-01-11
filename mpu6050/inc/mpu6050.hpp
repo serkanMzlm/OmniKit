@@ -13,6 +13,10 @@ public:
     ~MPU6050();
     int initI2c(const char* filename, int mpu_addr);
 
+    int readGyroscopeRange();
+    int readAccelerometerRange();
+    int readDlpfConfig();
+
     void readRangeConfig();
     void setGyroscopeRange(GyroRange range);
     void setAccelerometerRange(AccelRange range);
@@ -29,15 +33,16 @@ public:
     double convertRawAccData(int16_t accel_raw) const;
     double convertRawGyroData(int16_t gyro_raw) const;
 
-    void calibrate();
     void setGyroOffset(double* offset);
     void setAccOffset(double* offset);
+    void calibrate();
+
     void printConfig() const;
     void printOffsets() const;
-    void cleanTerminal() const;
-    void printAcceleration() const;
-    void printAngularVelocity() const;
+    void printAccData() const;
+    void printGyroData() const;
     void reportError(int error, std::string error_info = "Errno");
+
 private:
     int fd;
     int barWidth = 50;
@@ -46,6 +51,7 @@ private:
     int ranges[R_ALL] = {2, 250, 260};
     double gyro_offset[C_ALL] = {0.0, 0.0, 0.0};
     double acc_offset[C_ALL] = {0.0, 0.0, 0.0};
+    char filename[11];
 
     const std::array<int, 4> accel_ranges{2, 4, 8, 16};
     const std::array<int, 4> gyro_ranges{250, 500, 1000, 2000};
