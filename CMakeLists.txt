@@ -8,3 +8,7 @@ target_link_libraries(mpu6050_sensor mpu6050_lib)
 add_subdirectory(vl53l5cx)
 add_executable(vl53l5cx_sensor ${CMAKE_SOURCE_DIR}/test/vl53l5cx_sensor.cpp)
 target_link_libraries(vl53l5cx_sensor vl53l5cx_lib)
+
+add_subdirectory(pmw3901)
+add_executable(pmw3901_sensor ${CMAKE_SOURCE_DIR}/test/pmw3901_sensor.cpp)
+target_link_libraries(pmw3901_sensor pmw3901_lib)
