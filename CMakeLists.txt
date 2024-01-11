@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(drivers)
 
+<<<<<<< HEAD
 
 add_subdirectory(mpu6050)
 
@@ -13,4 +14,9 @@ target_link_libraries(mpu6050_sensor mpu6050_lib)
 # file(GLOB_RECURSE source_file ${CMAKE_SOURCE_DIR}/mpu6050/src/*.cpp)
 # include_directories(${CMAKE_SOURCE_DIR}/mpu6050/inc/)
 # target_link_libraries(mpu6050 -li2c)
+=======
+add_subdirectory(mpu6050)
+add_executable(mpu6050_sensor ${CMAKE_SOURCE_DIR}/test/mpu6050_sensor.cpp)
+target_link_libraries(mpu6050_sensor mpu6050_lib)
+>>>>>>> origin/main
 

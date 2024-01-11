@@ -17,6 +17,7 @@ public:
     int readAccelerometerRange();
     int readDlpfConfig();
 
+    void readRangeConfig();
     void setGyroscopeRange(GyroRange range);
     void setAccelerometerRange(AccelRange range);
     void setDlpfBandwidth(DlpfBandwidth bandwidth);
@@ -45,6 +46,7 @@ public:
 private:
     int fd;
     int barWidth = 50;
+    char filename[11];
     bool calibrated = false;
     int ranges[R_ALL] = {2, 250, 260};
     double gyro_offset[C_ALL] = {0.0, 0.0, 0.0};

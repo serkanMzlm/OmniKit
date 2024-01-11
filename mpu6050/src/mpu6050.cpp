@@ -21,11 +21,11 @@ MPU6050::MPU6050(int bus_number){
     readDlpfConfig();
 }
 
-MPU6050::~MPU6050(){
+MPU6050::~MPU6050() {
     close(fd);
 }
 
-int MPU6050::initI2c(const char* filename, int mpu_addr){
+int MPU6050::initI2c(const char* filename, int mpu_addr) {
 	fd = open(filename, O_RDWR);
 	if(fd < 0){
 		reportError(errno, "Could not open the I2C device");
@@ -34,6 +34,7 @@ int MPU6050::initI2c(const char* filename, int mpu_addr){
 	if(ioctl(fd, I2C_SLAVE, mpu_addr) < 0){
 		reportError(errno, "Could not set I2C device addres");
         close(fd);
+        reportError(errno, "Could not set I2C device address");
 		return -1;
 	}
   	if(i2c_smbus_write_byte_data(fd, PWR_MGMT_1, 0) < 0){
@@ -53,24 +54,19 @@ int MPU6050::readGyroscopeRange(){
     return ranges[GYR_R];
 }
 
-int MPU6050::readAccelerometerRange(){
-    int result = i2c_smbus_read_byte_data(fd, ACC_CONFIG_REG);
-    if(result < 0){
-        exit(1);
-    }
-    result = result >> 3;
-    ranges[ACC_R] = accel_ranges[result];
-    return ranges[ACC_R];
+void MPU6050::printAcceleration() const {
+    // std::cout << 
+	std::cout << "Acc\n";
+	std::cout << "X: " << getAccelerationX() << "\n";
+	std::cout << "Y: " << getAccelerationY() << "\n";
+	std::cout << "Z: " << getAccelerationZ() << "\n";
 }
 
-int MPU6050::readDlpfConfig(){
-    int result = i2c_smbus_read_byte_data(fd, DLPF_CONFIG_REG);
-    if(result < 0){
-        exit(1);
-    }
-    result = result >> 3;
-    ranges[DLPF_R] = dlpf_ranges[result];
-    return ranges[DLPF_R];
+void MPU6050::printAngularVelocity() const {
+	std::cout << "Gyro\n";
+	std::cout << "X: " << getAngularVelocityX() << "\n";
+	std::cout << "Y: " << getAngularVelocityY() << "\n";
+	std::cout << "Z: " << getAngularVelocityZ() << "\n";
 }
 
 void MPU6050::setGyroscopeRange(GyroRange range){
