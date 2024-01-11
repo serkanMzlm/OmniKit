@@ -44,7 +44,7 @@ void VL53L5CX::getRange(){
         for(int a = 0; a < 64; a++){
 			if(a % 8 == 0) std::cout << "\n";
             std::cout << "|" << std::setw(4) << 
-                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|" << std::endl;
+                    Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*a] << " mm|";
 		}
     }
 }
