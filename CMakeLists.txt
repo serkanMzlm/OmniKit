@@ -14,4 +14,4 @@ add_executable(pmw3901_sensor ${CMAKE_SOURCE_DIR}/test/pmw3901_sensor.cpp)
 # target_link_libraries(pmw3901_sensor pmw3901_lib)
 
 # add_subdirectory(frid)
-add_executable(frid_sensor ${CMAKE_SOURCE_DIR}/test/frid_sensor.cpp)
+# add_executable(frid_sensor ${CMAKE_SOURCE_DIR}/test/frid_sensor.cpp)
