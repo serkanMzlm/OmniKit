@@ -13,5 +13,6 @@ target_link_libraries(mpu6050_sensor mpu6050_lib)
 add_executable(pmw3901_sensor ${CMAKE_SOURCE_DIR}/test/pmw3901_sensor.cpp)
 # target_link_libraries(pmw3901_sensor pmw3901_lib)
 
-# add_subdirectory(frid)
-# add_executable(frid_sensor ${CMAKE_SOURCE_DIR}/test/frid_sensor.cpp)
+add_subdirectory(bmp180)
+add_executable(bmp180_sensor ${CMAKE_SOURCE_DIR}/test/bmp180_sensor.cpp)
+target_link_libraries(bmp180_sensor bmp180_lib)
