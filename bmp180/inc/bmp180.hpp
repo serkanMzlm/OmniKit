@@ -20,8 +20,8 @@ public:
     float readTemperature();
     int32_t readPressure();
 
-    float readAltitude(float sealevelPressure);
-    float readSealevelPressure(float altitude_meters);
+    float readAltitude(float sealevelPressure = 101325);
+    float readSealevelPressure(float altitude_meters = 0);
 
     void prinfCalbrationCoef() const;
     void reportError(int error, std::string error_info = "errno") const;
