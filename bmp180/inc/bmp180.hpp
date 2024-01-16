@@ -10,6 +10,7 @@ class BMP180{
 public:
     BMP180(int bus_number = 1);
     ~BMP180();
+
     int initI2c(const char * filename, int bmp_addr);
 
     void readCalibrationCoef();
@@ -25,7 +26,9 @@ public:
 
     void prinfCalbrationCoef() const;
     void reportError(int error, std::string error_info = "errno") const;
-
+private:
+    int16_t read16(uint8_t reg);
+    int8_t read8(uint8_t reg);
 private:
     int fd;
     char filename[11];

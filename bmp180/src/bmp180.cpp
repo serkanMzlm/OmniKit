@@ -35,49 +35,19 @@ int BMP180::initI2c(const char * filename, int bmp_addr){
 }
 
 void BMP180::readCalibrationCoef(){
-    int16_t ac1_h = i2c_smbus_read_byte_data(fd, BMP180_AC1_H);
-    int16_t ac1_l = i2c_smbus_read_byte_data(fd, BMP180_AC1_H + 1);
-    AC1 = ac1_l | ac1_h << 8;
+    AC1 = read16(BMP180_AC1_H);
+    AC2 = read16(BMP180_AC2_H);
+    AC3 = read16(BMP180_AC3_H);
+    AC4 = static_cast<uint16_t>(read16(BMP180_AC4_H));
+    AC5 = static_cast<uint16_t>(read16(BMP180_AC4_H));
+    AC6 = static_cast<uint16_t>(read16(BMP180_AC4_H));
 
-    int16_t ac2_h = i2c_smbus_read_byte_data(fd, BMP180_AC2_H);
-    int16_t ac2_l = i2c_smbus_read_byte_data(fd, BMP180_AC2_H + 1);
-    AC2 = ac2_l | ac2_h << 8;
+    B1 = read16(BMP180_B1_H);
+    B2 = read16(BMP180_B2_H);
 
-    int16_t ac3_h = i2c_smbus_read_byte_data(fd, BMP180_AC3_H);
-    int16_t ac3_l = i2c_smbus_read_byte_data(fd, BMP180_AC3_H + 1);
-    AC3 = ac3_l | ac3_h << 8;
-
-    int16_t ac4_h = i2c_smbus_read_byte_data(fd, BMP180_AC4_H);
-    int16_t ac4_l = i2c_smbus_read_byte_data(fd, BMP180_AC4_H + 1);
-    AC4 = static_cast<uint16_t>(ac4_l | ac4_h << 8);
-
-    int16_t ac5_h = i2c_smbus_read_byte_data(fd, BMP180_AC5_H);
-    int16_t ac5_l = i2c_smbus_read_byte_data(fd, BMP180_AC5_H + 1);
-    AC5 = static_cast<uint16_t>(ac5_l | ac5_h << 8);
-
-    int16_t ac6_h = i2c_smbus_read_byte_data(fd, BMP180_AC6_H);
-    int16_t ac6_l = i2c_smbus_read_byte_data(fd, BMP180_AC6_H + 1);
-    AC6 = static_cast<uint16_t>(ac6_l | ac6_h << 8);
-
-    int16_t b1_h = i2c_smbus_read_byte_data(fd, BMP180_B1_H);
-    int16_t b1_l = i2c_smbus_read_byte_data(fd, BMP180_B1_H + 1);
-    B1 = b1_l | b1_h << 8;
-
-    int16_t b2_h = i2c_smbus_read_byte_data(fd, BMP180_B2_H);
-    int16_t b2_l = i2c_smbus_read_byte_data(fd, BMP180_B2_H + 1);
-    B2 = b2_l | b2_h << 8;
-
-    int16_t mb_h = i2c_smbus_read_byte_data(fd, BMP180_MB_H);
-    int16_t mb_l = i2c_smbus_read_byte_data(fd, BMP180_MB_H + 1);
-    MB = mb_l | mb_h << 8;
-
-    int16_t mc_h = i2c_smbus_read_byte_data(fd, BMP180_MC_H);
-    int16_t mc_l = i2c_smbus_read_byte_data(fd, BMP180_MC_H + 1);
-    MC = mc_l | mc_h << 8;
-
-    int16_t md_h = i2c_smbus_read_byte_data(fd, BMP180_MD_H);
-    int16_t md_l = i2c_smbus_read_byte_data(fd, BMP180_MD_H + 1);
-    MD = md_l | md_h << 8;
+    MB = read16(BMP180_MB_H);
+    MC = read16(BMP180_MC_H);
+    MD = read16(BMP180_MD_H);
 }
 
 void BMP180::calculatePressure(){
@@ -192,4 +162,14 @@ void BMP180::prinfCalbrationCoef() const{
 
 void BMP180::reportError(int error, std::string error_info) const{
     std::cerr << "Error! " << error_info << ": " << strerror(error); 
+}
+
+int8_t BMP180::read8(uint8_t reg){
+    return i2c_smbus_read_byte_data(fd, reg);
+}
+
+int16_t BMP180::read16(uint8_t reg){
+    int16_t reg_h = i2c_smbus_read_byte_data(fd, reg);
+    int16_t reg_l = i2c_smbus_read_byte_data(fd, reg + 1);
+    return reg_l | reg_h << 8;
 }
