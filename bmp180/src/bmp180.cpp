@@ -50,20 +50,15 @@ void BMP180::readCalibrationCoef(){
     MD = read16(BMP180_MD_H);
 }
 
-void BMP180::calculatePressure(){
-}
-
 int16_t BMP180::readRawTemperature(){
     int result = i2c_smbus_write_byte_data(fd, BMP180_CONTROL, BMP180_TEMP_CMD);
     if(result < 0) reportError(errno);
     usleep(5*1000);
-    int16_t tmp_h = i2c_smbus_read_byte_data(fd, BMP180_TEMP_H);
-    int16_t tmp_l = i2c_smbus_read_byte_data(fd, BMP180_TEMP_H + 1);
-    return (tmp_l | tmp_h << 8);
+    return  read16(BMP180_TEMP_H);
 }
 
 uint32_t BMP180::readRawPressure(){
-    i2c_smbus_write_byte_data(fd, BMP180_CONTROL, BMP180_READPRESSURE_CMD + (mode << 6));
+    i2c_smbus_write_byte_data(fd, BMP180_CONTROL, BMP180_READ_PRESSURE_CMD + (mode << 6));
     switch (mode) {
     case 0:
         usleep(5 * 1000);
@@ -79,10 +74,9 @@ uint32_t BMP180::readRawPressure(){
         break;    
     }
 
-    uint32_t raw = i2c_smbus_read_byte_data(fd, BMP180_TEMP_H);
-    raw <<= 16;
-    raw |= i2c_smbus_read_byte_data(fd, BMP180_TEMP_H + 1) << 8;
-    raw |= i2c_smbus_read_byte_data(fd, BMP180_TEMP_H + 2);
+    uint32_t raw = read16(BMP180_PRESSUREDATA);
+    raw <<= 8;
+    raw |= read8(BMP180_PRESSUREDATA + 2);
     raw >>= (8 - mode);
     return raw;
 }
@@ -95,14 +89,18 @@ int32_t BMP180::computeB5(int32_t UT){
 
 float BMP180::readTemperature(){
     int32_t UT, B5;
+    float temp;
     UT = readRawTemperature();
     B5 = computeB5(UT);
-    return static_cast<float>(((B5 + 8) >> 4) / 10.0); //  = (B5 + 8)/2^4
+    temp = ((B5 + 8) >> 4);
+    temp /= 10.0;
+    return temp; 
 }
 
 int32_t BMP180::readPressure(){
     int32_t UT, UP, p;
-    int32_t B3, B4, B5, B6, B7;
+    int32_t B3, B5, B6;
+    uint32_t B4, B7;
     int32_t X1, X2, X3;
     UT = readRawTemperature();
     UP = readRawPressure();   

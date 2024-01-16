@@ -23,10 +23,7 @@
 #define BMP180_TEMP_L (0xF7)
 #define BMP180_TEMP_XL (0xF8)
 
-#define BMP180_READPRESSURE_CMD 0x34
-
-// typedef struct{
-//     int16_t 
-// } CalibCoeff_s;
+#define BMP180_READ_PRESSURE_CMD 0x34
+#define BMP180_PRESSUREDATA 0xF6
 
 #endif
