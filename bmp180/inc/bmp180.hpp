@@ -10,7 +10,7 @@ class BMP180{
 public:
     BMP180(int bus_number = 1);
     ~BMP180();
-    int initI2c(const char * filename, int bmp_addr);
+    int initI2c(const char * filename, int addr);
 
     void readCalibrationCoef();
     int16_t readRawTemperature();

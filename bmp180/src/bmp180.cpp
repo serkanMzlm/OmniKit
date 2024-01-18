@@ -20,13 +20,13 @@ BMP180::~BMP180(){
     close(fd);
 }
 
-int BMP180::initI2c(const char * filename, int bmp_addr){
+int BMP180::initI2c(const char * filename, int addr){
     fd = open(filename, O_RDWR);
     if(fd < -1){
         reportError(errno, "Could not open the I2C device");
         return -1;
     }
-    if(ioctl(fd, I2C_SLAVE, bmp_addr) < 0){
+    if(ioctl(fd, I2C_SLAVE, addr) < 0){
         reportError(errno, "Could not open the I2C device address");
         close(fd);
         return -1;

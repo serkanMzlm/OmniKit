@@ -11,9 +11,8 @@ add_executable(bmp180_sensor ${CMAKE_SOURCE_DIR}/test/bmp180_sensor.cpp)
 target_link_libraries(bmp180_sensor bmp180_lib)
 
 add_subdirectory(LCD_2x16)
-add_executable(lcd_display ${CMAKE_SOURCE_DIR}/test/main.c)
+add_executable(lcd_display ${CMAKE_SOURCE_DIR}/test/lcd_display.cpp)
 target_link_libraries(lcd_display lcd_lib)
-
 
 ####################################################################################
 
