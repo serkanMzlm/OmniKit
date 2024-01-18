@@ -5,6 +5,19 @@ add_subdirectory(mpu6050)
 add_executable(mpu6050_sensor ${CMAKE_SOURCE_DIR}/test/mpu6050_sensor.cpp)
 target_link_libraries(mpu6050_sensor mpu6050_lib)
 
+
+add_subdirectory(bmp180)
+add_executable(bmp180_sensor ${CMAKE_SOURCE_DIR}/test/bmp180_sensor.cpp)
+target_link_libraries(bmp180_sensor bmp180_lib)
+
+add_subdirectory(LCD_2x16)
+add_executable(lcd_display ${CMAKE_SOURCE_DIR}/test/lcd_display.cpp)
+target_link_libraries(lcd_display lcd_lib)
+
+
+####################################################################################
+
+
 # add_subdirectory(vl53l5cx)
 # add_executable(vl53l5cx_sensor ${CMAKE_SOURCE_DIR}/test/vl53l5cx_sensor.cpp)
 # target_link_libraries(vl53l5cx_sensor vl53l5cx_lib)
@@ -12,7 +25,3 @@ target_link_libraries(mpu6050_sensor mpu6050_lib)
 # add_subdirectory(pmw3901)
 add_executable(pmw3901_sensor ${CMAKE_SOURCE_DIR}/test/pmw3901_sensor.cpp)
 # target_link_libraries(pmw3901_sensor pmw3901_lib)
-
-add_subdirectory(bmp180)
-add_executable(bmp180_sensor ${CMAKE_SOURCE_DIR}/test/bmp180_sensor.cpp)
-target_link_libraries(bmp180_sensor bmp180_lib)
