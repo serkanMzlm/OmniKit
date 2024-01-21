@@ -19,22 +19,17 @@
 #define LCD_SETDDRAMADDR 0x80
 
 // flags for display entry mode
-#define LCD_ENTRYRIGHT 0x00
 #define LCD_ENTRYLEFT 0x02
 #define LCD_ENTRYSHIFTINCREMENT 0x01
 #define LCD_ENTRYSHIFTDECREMENT 0x00
 
 // flags for display on/off control
 #define LCD_DISPLAYON 0x04
-#define LCD_DISPLAYOFF 0x00
 #define LCD_CURSORON 0x02
-#define LCD_CURSOROFF 0x00
 #define LCD_BLINKON 0x01
-#define LCD_BLINKOFF 0x00
 
 // flags for display/cursor shift
 #define LCD_DISPLAYMOVE 0x08
-#define LCD_CURSORMOVE 0x00
 #define LCD_MOVERIGHT 0x04
 #define LCD_MOVELEFT 0x00
 
@@ -52,5 +47,7 @@
 #define En 0b00000100  // Enable bit
 #define Rw 0b00000010  // Read/Write bit
 #define Rs 0b00000001  // Register select bit
+
+typedef enum {ON, OFF} State_e;
 
 #endif

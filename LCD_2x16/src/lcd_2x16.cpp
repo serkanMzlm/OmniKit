@@ -53,22 +53,11 @@ void LCD::begin(){
     sleep(5);
     write4bits(0x02 << 4);
     command(LCD_FUNCTIONSET | _displayfunction);
-    _displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-    display();
+    display(ON);
     clear();
     _displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
     command(LCD_ENTRYMODESET | _displaymode);
     home();
-}
-
-void LCD::noDisplay(){
-    _displaycontrol &= ~LCD_DISPLAYON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
-}
-
-void LCD::display(){
-    _displaycontrol |= LCD_DISPLAYON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 void LCD::clear(){
@@ -89,24 +78,34 @@ void LCD::setCursor(uint8_t col, uint8_t row){
     command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
 }
 
-void LCD::noCursor(){
-	_displaycontrol &= ~LCD_CURSORON;
+void LCD::display(State_e state){
+    if(state == ON) _displaycontrol |= LCD_DISPLAYON;
+    else _displaycontrol &= ~LCD_DISPLAYON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void LCD::cursor(){
-	_displaycontrol |= LCD_CURSORON;
+void LCD::cursor(State_e state){
+    if(state == ON) _displaycontrol |= LCD_CURSORON;
+    else _displaycontrol &= ~LCD_CURSORON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void LCD::noBlink(){
-	_displaycontrol &= ~LCD_BLINKON;
+void LCD::blink(State_e state){
+    if(state == ON) _displaycontrol |= LCD_BLINKON;
+    else _displaycontrol &= ~LCD_BLINKON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void LCD::blink(){
-	_displaycontrol |= LCD_BLINKON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+void LCD::autoscroll(State_e state){
+    if(state == ON) _displaymode |= LCD_ENTRYSHIFTINCREMENT;
+	else _displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::backlight(State_e state) {
+    if(state == ON) _backlightval = LCD_BACKLIGHT;
+	else _backlightval = LCD_NOBACKLIGHT;
+	expanderWrite(_backlightval);
 }
 
 void LCD::scrollDisplayLeft(){
@@ -127,39 +126,11 @@ void LCD::rightToLeft(){
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
-void LCD::autoscroll(){
-	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
-	command(LCD_ENTRYMODESET | _displaymode);
-}
-
-void LCD::noAutoscroll(){
-	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
-	command(LCD_ENTRYMODESET | _displaymode);
-}
-
 void LCD::createChar(uint8_t location, uint8_t charmap[]){
     location &= 0x7; 
 	command(LCD_SETCGRAMADDR | (location << 3));
 	for (int i=0; i<8; i++) {
 		command(charmap[i], Rs);
-	}
-}
-
-void LCD::noBacklight() {
-	_backlightval = LCD_NOBACKLIGHT;
-	expanderWrite(0);
-}
-
-void LCD::backlight() {
-	_backlightval = LCD_BACKLIGHT;
-	expanderWrite(_backlightval);
-}
-
-void LCD::setBacklight(uint8_t new_val){
-	if (new_val) {
-		backlight();		// turn backlight on
-	} else {
-		noBacklight();		// turn backlight off
 	}
 }
 
@@ -191,8 +162,6 @@ int LCD::writeString(char* text){
 		text++;
 		i++;
     }
-    
-
 }
 
 //////////////////////////////////////
