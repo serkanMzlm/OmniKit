@@ -13,7 +13,7 @@
 #define CMD_PERIOD 4100
 
 #define LCD_SLAVE_ADDR (0x27)
-
+using namespace LCD_2;
 LCD::LCD(int bus_number){
     snprintf(filename, 11, "/dev/i2c-%d", bus_number);
     if(initI2c(filename, LCD_SLAVE_ADDR)) { exit(-1); }

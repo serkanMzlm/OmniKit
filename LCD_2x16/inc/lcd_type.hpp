@@ -4,6 +4,7 @@
 #define LCD_SLAVE_ADDR (0x27)
 #define LCD_ROW 2
 #define LCD_COLUMN 16
+
 // Commands
 #define LCD_CLEAR_DISPLAY (0x01)
 #define LCD_RETURN_HOME (0x02)

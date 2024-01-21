@@ -8,6 +8,7 @@
 #define BACKLIGHT 8
 #define DATA 1
 
+namespace LCD_2 {
 class LCD{
 public:
     LCD(int bus_number = 1);
@@ -25,6 +26,7 @@ private:
     int fd;
     char filename[11];
     int backlight = BACKLIGHT;
+};
 };
 
 #endif
