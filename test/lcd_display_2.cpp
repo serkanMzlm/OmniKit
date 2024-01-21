@@ -63,7 +63,7 @@ extern "C"{
 ///////////////////////////////////
 //    description (bildirim)     //
 ///////////////////////////////////
-class I2C{
+class LCD{
 private:
     int fd;
     int i2c_bus = 1;
@@ -73,23 +73,31 @@ private:
     uint8_t _addr = LCD_SLAVE_ADDR;
 	uint8_t _backlightval = LCD_BACKLIGHT;
     uint8_t _displayfunction;
+    uint8_t _displaymode;
+    uint8_t _displaycontrol;
+public:
+    LCD(void);
+    ~LCD();
+    int init(const char* filename, int slave_addr = LCD_SLAVE_ADDR);
+    void begin();
+    void noDisplay();
+    void display();
+    void clear();
+    void home();
 private:
-    void sleep(uint16_t ms_time);
     void write4bits(uint8_t value);
     int expanderWrite(uint8_t data);
     void pulseEnable(uint8_t data);
+    void command(uint8_t value, uint8_t mode = 0);
+private:
+    void sleep(uint16_t ms_time);
     void reportError(int error, std::string info = "Errno");
-public:
-    I2C(void);
-    ~I2C();
-    int init(const char* filename, int slave_addr = LCD_SLAVE_ADDR);
-    void begin();
 };
 
 int main(){
-    I2C _i2c;
+    LCD _i2c;
     std::cout << "Press Enter to exit." << std::endl;
-    getchar();
+    // getchar();
     return 0;
 }
 
@@ -97,7 +105,7 @@ int main(){
 ///////////////////////////////////
 //      definition (tanım)       //
 ///////////////////////////////////
-I2C::I2C(void){
+LCD::LCD(void){
     std::cout << "The file has been launched." << std::endl;
     snprintf(filename, 11, "/dev/i2c-%d", i2c_bus);
     if(init(filename, LCD_SLAVE_ADDR)){
@@ -106,11 +114,11 @@ I2C::I2C(void){
     begin();
 }
 
-I2C::~I2C(){
+LCD::~LCD(){
     close(fd);
 }
 
-int I2C::init(const char* filename, int slave_addr){
+int LCD::init(const char* filename, int slave_addr){
     fd = open(filename, O_RDWR);
     if(fd < 0){
         reportError(errno, "Failed  to open I2C device.");
@@ -124,11 +132,11 @@ int I2C::init(const char* filename, int slave_addr){
     return OK;
 }
 
-void I2C::begin(){
+void LCD::begin(){
     _displayfunction = LCD_4BITMODE | LCD_2LINE | LCD_5x8DOTS;
     sleep(50);
     expanderWrite(_backlightval);
-    sleep(10000);
+    sleep(1000);
 
     write4bits(0x03 << 4);
     sleep(5);
@@ -137,20 +145,41 @@ void I2C::begin(){
     write4bits(0x03 << 4);
     sleep(5);
     write4bits(0x02 << 4);
-
-
+    command(LCD_FUNCTIONSET | _displayfunction);
+    _displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
+    display();
+    clear();
+    _displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
+    command(LCD_ENTRYMODESET | _displaymode);
+    home();
 }
 
-void I2C::sleep(uint16_t ms_time){
-    usleep(ms_time * 1000);
+void LCD::noDisplay(){
+    _displaycontrol &= ~LCD_DISPLAYON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void I2C::write4bits(uint8_t value){
+void LCD::display(){
+    _displaycontrol |= LCD_DISPLAYON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::clear(){
+    command(LCD_CLEARDISPLAY);
+	sleep(2);
+}
+
+void LCD::home(){
+    command(LCD_RETURNHOME);
+	sleep(2);
+}
+
+void LCD::write4bits(uint8_t value){
     expanderWrite(value);
 	pulseEnable(value);
 }
 
-int I2C::expanderWrite(uint8_t data){
+int LCD::expanderWrite(uint8_t data){
     if(write(fd, &data, 1) != 1){
         reportError(errno, "Error writing data over I2C");
         return FAILED;
@@ -158,13 +187,25 @@ int I2C::expanderWrite(uint8_t data){
     return OK;
 }
 
-void I2C::pulseEnable(uint8_t data){
+void LCD::pulseEnable(uint8_t data){
     expanderWrite(data | En);
     usleep(1);
     expanderWrite(data & ~En);
     usleep(50);
 }
 
-void I2C::reportError(int error, std::string info){
+void LCD::command(uint8_t value, uint8_t mode){
+    uint8_t highnib = value & 0xf0;
+	uint8_t lownib = (value<<4) & 0xf0;
+	write4bits((highnib) | mode);
+	write4bits((lownib) | mode);
+}
+
+/////////////////////////////////////////
+void LCD::sleep(uint16_t ms_time){
+    usleep(ms_time * 1000);
+}
+
+void LCD::reportError(int error, std::string info){
     std::cerr << "Error! " << info << " : " << strerror(error);
 }
