@@ -5,6 +5,8 @@
 #include <cstring>
 #include <cmath>
 
+#include <unistd.h>
+
 #define BACKLIGHT 8
 #define DATA 1
 
