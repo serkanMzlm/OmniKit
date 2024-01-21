@@ -6,7 +6,9 @@ int main(){
     lcd.cursor();
     lcd.blink();
     lcd.backlight();  
-    lcd.writeString();  
+    lcd.writeString("Hello");
+    lcd.setCursor(0, 1);
+    lcd.writeString("World");
     getchar();
     lcd.clear();
     lcd.backlight();

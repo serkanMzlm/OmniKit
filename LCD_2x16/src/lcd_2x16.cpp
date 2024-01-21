@@ -81,7 +81,7 @@ void LCD::home(){
 	sleep(2);
 }
 
-void LCD::setcursor(uint8_t col, uint8_t row){
+void LCD::setCursor(uint8_t col, uint8_t row){
     int row_offsets[] = { 0x00, 0x40 };
     if(row > _rows && row < 0){
         row = _rows-1;
@@ -163,8 +163,7 @@ void LCD::setBacklight(uint8_t new_val){
 	}
 }
 
-int LCD::writeString(){
-    char * text = "deneme";
+int LCD::writeString(char* text){
     unsigned char ucTemp[2];
     int i = 0;
     if(fd < 0 || text == NULL){

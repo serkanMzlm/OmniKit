@@ -30,7 +30,7 @@ public:
     void display();
     void clear();
     void home();
-    void setcursor(uint8_t col, uint8_t row);
+    void setCursor(uint8_t col, uint8_t row);
     void noCursor();
     void cursor();
     void noBlink();
@@ -45,7 +45,7 @@ public:
     void noBacklight();
     void backlight();
     void setBacklight(uint8_t new_val);
-    int writeString();
+    int writeString(char* text);
 private:
     void write4bits(uint8_t value);
     int expanderWrite(uint8_t data);
