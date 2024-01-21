@@ -61,7 +61,7 @@ extern "C"{
 #define Rs 0b00000001  // Register select bit
 
 ///////////////////////////////////
-//    description (bildirim)     //
+//         description           //
 ///////////////////////////////////
 class LCD{
 private:
@@ -84,6 +84,21 @@ public:
     void display();
     void clear();
     void home();
+    void setcursor(uint8_t col, uint8_t row);
+    void noCursor();
+    void cursor();
+    void noBlink();
+    void blink();
+    void scrollDisplayLeft();
+    void scrollDisplayRight();
+    void leftToRight();
+    void rightToLeft();
+    void autoscroll();
+    void noAutoscroll();
+    void createChar(uint8_t location, uint8_t charmap[]);
+    void noBacklight();
+    void backlight();
+    void setBacklight(uint8_t new_val);
 private:
     void write4bits(uint8_t value);
     int expanderWrite(uint8_t data);
@@ -95,15 +110,18 @@ private:
 };
 
 int main(){
-    LCD _i2c;
+    LCD lcd;
     std::cout << "Press Enter to exit." << std::endl;
-    // getchar();
+    lcd.cursor();
+    lcd.blink();
+    lcd.backlight();    
+    getchar();
+    lcd.noBacklight();
     return 0;
 }
 
-
 ///////////////////////////////////
-//      definition (tanım)       //
+//         definition            //
 ///////////////////////////////////
 LCD::LCD(void){
     std::cout << "The file has been launched." << std::endl;
@@ -174,6 +192,89 @@ void LCD::home(){
 	sleep(2);
 }
 
+void LCD::setcursor(uint8_t col, uint8_t row){
+    int row_offsets[] = { 0x00, 0x40 };
+    if(row > _rows && row < 0){
+        row = _rows-1;
+    }
+    command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
+}
+
+void LCD::noCursor(){
+	_displaycontrol &= ~LCD_CURSORON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::cursor(){
+	_displaycontrol |= LCD_CURSORON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::noBlink(){
+	_displaycontrol &= ~LCD_BLINKON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::blink(){
+	_displaycontrol |= LCD_BLINKON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::scrollDisplayLeft(){
+    command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+}
+
+void LCD::scrollDisplayRight(){
+    command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+}
+
+void LCD::leftToRight(){
+    _displaymode |= LCD_ENTRYLEFT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::rightToLeft(){
+    _displaymode &= ~LCD_ENTRYLEFT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::autoscroll(){
+	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::noAutoscroll(){
+	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::createChar(uint8_t location, uint8_t charmap[]){
+    location &= 0x7; 
+	command(LCD_SETCGRAMADDR | (location << 3));
+	for (int i=0; i<8; i++) {
+		command(charmap[i], Rs);
+	}
+}
+
+void LCD::noBacklight() {
+	_backlightval = LCD_NOBACKLIGHT;
+	expanderWrite(0);
+}
+
+void LCD::backlight() {
+	_backlightval = LCD_BACKLIGHT;
+	expanderWrite(_backlightval);
+}
+
+void LCD::setBacklight(uint8_t new_val){
+	if (new_val) {
+		backlight();		// turn backlight on
+	} else {
+		noBacklight();		// turn backlight off
+	}
+}
+
+//////////////////////////////////////
 void LCD::write4bits(uint8_t value){
     expanderWrite(value);
 	pulseEnable(value);
