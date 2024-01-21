@@ -1,140 +1,234 @@
-#include <stdint.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <linux/types.h>
 #include <linux/i2c-dev.h>
+
+extern "C"{
+#include <errno.h>
+#include <i2c/smbus.h>
+}
 
 #include "lcd_2x16.hpp"
 
-#define PULSE_PERIOD 500
-#define CMD_PERIOD 4100
-
-#define LCD_SLAVE_ADDR (0x27)
-
-LCD::LCD(int bus_number){
-    snprintf(filename, 11, "/dev/i2c-%d", bus_number);
-    if(initI2c(filename, LCD_SLAVE_ADDR)) { exit(-1); }
+///////////////////////////////////
+//         definition            //
+///////////////////////////////////
+LCD::LCD(void){
+    std::cout << "The file has been launched." << std::endl;
+    snprintf(filename, 11, "/dev/i2c-%d", i2c_bus);
+    if(init(filename, LCD_SLAVE_ADDR)){
+        exit(-1);
+    }
+    begin();
 }
 
 LCD::~LCD(){
     close(fd);
 }
 
-int LCD::initI2c(const char* filename, int addr){
+int LCD::init(const char* filename, int slave_addr){
     fd = open(filename, O_RDWR);
-    if(fd < -1){
-        reportError(errno, "Could not open the I2C device");
-        return -1;
+    if(fd < 0){
+        reportError(errno, "Failed  to open I2C device.");
+        return FAILED;
     }
-    if(ioctl(fd, I2C_SLAVE, addr) < 0){
-        reportError(errno, "Could not open the I2C device address");
+    if(ioctl(fd, I2C_SLAVE, slave_addr)){
+        reportError(errno, "Failed to connect to the I2C device");
         close(fd);
-        return -1;
+        return FAILED;
     }
+    return OK;
+}
 
-    backlight = BACKLIGHT;
-    writeCommand(0x02);
-    writeCommand(0x28);
-    writeCommand(0x0c);
-    writeCommand(0x06);
-    writeCommand(0x80);
+void LCD::begin(){
+    _displayfunction = LCD_4BITMODE | LCD_2LINE | LCD_5x8DOTS;
+    sleep(50);
+    expanderWrite(_backlightval);
+    sleep(1000);
+
+    write4bits(0x03 << 4);
+    sleep(5);
+    write4bits(0x03 << 4);
+    sleep(5);
+    write4bits(0x03 << 4);
+    sleep(5);
+    write4bits(0x02 << 4);
+    command(LCD_FUNCTIONSET | _displayfunction);
+    _displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
+    display();
     clear();
-    return 0;
+    _displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
+    command(LCD_ENTRYMODESET | _displaymode);
+    home();
 }
 
-int LCD::setCursor(int x, int y){
-    unsigned char cCmd;
-    if (fd < 0 || x < 0 || x > 15 || y < 0 || y > 1)
-		return 1;
-    cCmd = (y==0) ? 0x80 : 0xc0;
-	cCmd |= x;
-	writeCommand(cCmd);
-	return 0;
+void LCD::noDisplay(){
+    _displaycontrol &= ~LCD_DISPLAYON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-int LCD::control(int backlight, int cursor, int blink){
-    unsigned char ucCMD = 0xc; // display control
-
-	if (fd < 0)
-		return 1;
-	this->backlight = (backlight) ? BACKLIGHT : 0;
-	if (cursor)
-		ucCMD |= 2;
-	if (blink)
-		ucCMD |= 1;
-	writeCommand(ucCMD);
- 	
-	return 0;
+void LCD::display(){
+    _displaycontrol |= LCD_DISPLAYON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-int LCD::writeString(char * text){
+void LCD::clear(){
+    command(LCD_CLEARDISPLAY);
+	sleep(2);
+}
+
+void LCD::home(){
+    command(LCD_RETURNHOME);
+	sleep(2);
+}
+
+void LCD::setcursor(uint8_t col, uint8_t row){
+    int row_offsets[] = { 0x00, 0x40 };
+    if(row > _rows && row < 0){
+        row = _rows-1;
+    }
+    command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
+}
+
+void LCD::noCursor(){
+	_displaycontrol &= ~LCD_CURSORON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::cursor(){
+	_displaycontrol |= LCD_CURSORON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::noBlink(){
+	_displaycontrol &= ~LCD_BLINKON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::blink(){
+	_displaycontrol |= LCD_BLINKON;
+	command(LCD_DISPLAYCONTROL | _displaycontrol);
+}
+
+void LCD::scrollDisplayLeft(){
+    command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+}
+
+void LCD::scrollDisplayRight(){
+    command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+}
+
+void LCD::leftToRight(){
+    _displaymode |= LCD_ENTRYLEFT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::rightToLeft(){
+    _displaymode &= ~LCD_ENTRYLEFT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::autoscroll(){
+	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::noAutoscroll(){
+	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
+	command(LCD_ENTRYMODESET | _displaymode);
+}
+
+void LCD::createChar(uint8_t location, uint8_t charmap[]){
+    location &= 0x7; 
+	command(LCD_SETCGRAMADDR | (location << 3));
+	for (int i=0; i<8; i++) {
+		command(charmap[i], Rs);
+	}
+}
+
+void LCD::noBacklight() {
+	_backlightval = LCD_NOBACKLIGHT;
+	expanderWrite(0);
+}
+
+void LCD::backlight() {
+	_backlightval = LCD_BACKLIGHT;
+	expanderWrite(_backlightval);
+}
+
+void LCD::setBacklight(uint8_t new_val){
+	if (new_val) {
+		backlight();		// turn backlight on
+	} else {
+		noBacklight();		// turn backlight off
+	}
+}
+
+int LCD::writeString(){
+    char * text = "deneme";
     unsigned char ucTemp[2];
     int i = 0;
+    if(fd < 0 || text == NULL){
+        return FAILED;
+    }
 
-	if (fd < 0 || text == NULL)
-		return 1;
-
-	while (i<16 && *text)
-	{
-		ucTemp[0] = backlight | DATA | (*text & 0xf0);
+    while (i < 16 && *text) {
+        ucTemp[0] = _backlightval | 1 | (*text & 0xf0);
 		write(fd, ucTemp, 1);
-		usleep(PULSE_PERIOD);
-		ucTemp[0] |= 4; // pulse E
-		write(fd, ucTemp, 1);
-		usleep(PULSE_PERIOD);
+        sleep(5);
+        ucTemp[0] |= 4;
+        write(fd, ucTemp, 1);
+		sleep(5);
 		ucTemp[0] &= ~4;
 		write(fd, ucTemp, 1);
-		usleep(PULSE_PERIOD);
-		ucTemp[0] = backlight | DATA | (*text << 4);
+		sleep(5);
+        ucTemp[0] = _backlightval | 1 | (*text << 4);
 		write(fd, ucTemp, 1);
 		ucTemp[0] |= 4; // pulse E
-                write(fd, ucTemp, 1);
-                usleep(PULSE_PERIOD);
-                ucTemp[0] &= ~4;
-                write(fd, ucTemp, 1);
-                usleep(CMD_PERIOD);
+        write(fd, ucTemp, 1);
+        sleep(5);
+        ucTemp[0] &= ~4;
+        write(fd, ucTemp, 1);
+        usleep(5);
 		text++;
 		i++;
-	}
-	return 0;
+    }
+    
+
 }
 
-int LCD::clear(){
-    if (fd < 0)
-        return 1;
-    writeCommand(0x0E); // clear the screen
-    return 0;
+//////////////////////////////////////
+void LCD::write4bits(uint8_t value){
+    expanderWrite(value);
+	pulseEnable(value);
 }
 
-void LCD::shutdownLCD(){
-    backlight = 0; // turn off backlight
-	writeCommand(0x08); // turn off display, cursor and blink	
-	close(fd);
-	fd = -1;
+int LCD::expanderWrite(uint8_t data){
+    if(write(fd, &data, 1) != 1){
+        reportError(errno, "Error writing data over I2C");
+        return FAILED;
+    }
+    return OK;
 }
 
-void LCD::writeCommand(unsigned char ucCMD){
-    unsigned char uc;
-    uc = (ucCMD & 0xf0) | backlight;
-    write(fd, &uc, 1);
-    usleep(PULSE_PERIOD);
-    uc |= 4; 
-    write(fd, &uc, 1);
-	usleep(PULSE_PERIOD);
-	uc &= ~4;
-    write(fd, &uc, 1);
-	usleep(CMD_PERIOD);
-	uc = backlight | (ucCMD << 4);
-	write(fd, &uc, 1);
-	usleep(PULSE_PERIOD);
-    uc |= 4;
-    write(fd, &uc, 1);
-    usleep(PULSE_PERIOD);
-    uc &= ~4;
-    write(fd, &uc, 1);
-	usleep(CMD_PERIOD);
+void LCD::pulseEnable(uint8_t data){
+    expanderWrite(data | En);
+    usleep(1);
+    expanderWrite(data & ~En);
+    usleep(50);
 }
 
-void LCD::reportError(int error, std::string error_info) const{
-    std::cerr << "Error! " << error_info << ": " << strerror(error); 
+void LCD::command(uint8_t value, uint8_t mode){
+    uint8_t highnib = value & 0xf0;
+	uint8_t lownib = (value<<4) & 0xf0;
+	write4bits((highnib) | mode);
+	write4bits((lownib) | mode);
+}
+
+/////////////////////////////////////////
+void LCD::sleep(uint16_t ms_time){
+    usleep(ms_time * 1000);
+}
+
+void LCD::reportError(int error, std::string info){
+    std::cerr << "Error! " << info << " : " << strerror(error);
 }

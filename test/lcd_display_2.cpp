@@ -99,6 +99,7 @@ public:
     void noBacklight();
     void backlight();
     void setBacklight(uint8_t new_val);
+    int writeString();
 private:
     void write4bits(uint8_t value);
     int expanderWrite(uint8_t data);
@@ -114,9 +115,11 @@ int main(){
     std::cout << "Press Enter to exit." << std::endl;
     lcd.cursor();
     lcd.blink();
-    lcd.backlight();    
+    lcd.backlight();  
+    lcd.writeString();  
     getchar();
-    lcd.noBacklight();
+    lcd.clear();
+    lcd.backlight();
     return 0;
 }
 
@@ -272,6 +275,39 @@ void LCD::setBacklight(uint8_t new_val){
 	} else {
 		noBacklight();		// turn backlight off
 	}
+}
+
+int LCD::writeString(){
+    char * text = "deneme";
+    unsigned char ucTemp[2];
+    int i = 0;
+    if(fd < 0 || text == NULL){
+        return FAILED;
+    }
+
+    while (i < 16 && *text) {
+        ucTemp[0] = _backlightval | 1 | (*text & 0xf0);
+		write(fd, ucTemp, 1);
+        sleep(5);
+        ucTemp[0] |= 4;
+        write(fd, ucTemp, 1);
+		sleep(5);
+		ucTemp[0] &= ~4;
+		write(fd, ucTemp, 1);
+		sleep(5);
+        ucTemp[0] = _backlightval | 1 | (*text << 4);
+		write(fd, ucTemp, 1);
+		ucTemp[0] |= 4; // pulse E
+        write(fd, ucTemp, 1);
+        sleep(5);
+        ucTemp[0] &= ~4;
+        write(fd, ucTemp, 1);
+        usleep(5);
+		text++;
+		i++;
+    }
+    
+
 }
 
 //////////////////////////////////////

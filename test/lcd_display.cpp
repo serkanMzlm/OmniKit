@@ -1,20 +1,15 @@
 #include "lcd_2x16.hpp"
 
-#define DELAY 100000
-
 int main(){
     LCD lcd;
-    char number[12];
-    for(int i = 0; i < 100; i++){
-        lcd.clear();
-        lcd.setCursor(0, 1);
-        snprintf(number, 12, "Number: %d", i);
-        lcd.writeString(number);
-        usleep(DELAY);
-    }
-    lcd.clear();
+    std::cout << "Press Enter to exit." << std::endl;
+    lcd.cursor();
+    lcd.blink();
+    lcd.backlight();  
+    lcd.writeString();  
     getchar();
-    lcd.shutdownLCD();
+    lcd.clear();
+    lcd.backlight();
     return 0;
 }
 

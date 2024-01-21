@@ -1,51 +1,53 @@
 #ifndef __LCD_TYPE_HPP__
 #define __LCD_TYPE_HPP__
 
-#define LCD_SLAVE_ADDR (0x27)
+#define OK 0
+#define FAILED 1
+
 #define LCD_ROW 2
 #define LCD_COLUMN 16
+#define LCD_SLAVE_ADDR (0x27)
 
-// Commands
-#define LCD_CLEAR_DISPLAY (0x01)
-#define LCD_RETURN_HOME (0x02)
-#define LCD_ENTRY_MODE_SET (0x04)
-#define LCD_DISPLAY_CONTROL (0x08)
-#define LCD_CURSOR_SHIFT (0x10) 
-#define LCD_FUNCTION_SET (0x20)
-#define LCD_SET_CGRAM_ADDR (0x40)
-#define LCD_SET_DDRAM_ADDR (0x80)
+// Command
+#define LCD_CLEARDISPLAY 0x01
+#define LCD_RETURNHOME 0x02
+#define LCD_ENTRYMODESET 0x04
+#define LCD_DISPLAYCONTROL 0x08
+#define LCD_CURSORSHIFT 0x10
+#define LCD_FUNCTIONSET 0x20
+#define LCD_SETCGRAMADDR 0x40
+#define LCD_SETDDRAMADDR 0x80
 
-// Flags for display entry mode 
-#define LCD_ENTRY_RIGHT (0x00)
-#define LCD_ENTRY_LEFT (0x02)
-#define LCD_ENTRY_SHIFT_INCREMENT (0x01)
-#define LCD_ENTRY_SHIFT_DECREMENT (0x00)
+// flags for display entry mode
+#define LCD_ENTRYRIGHT 0x00
+#define LCD_ENTRYLEFT 0x02
+#define LCD_ENTRYSHIFTINCREMENT 0x01
+#define LCD_ENTRYSHIFTDECREMENT 0x00
 
-// Flags for display on/off control
-#define LCD_DISPLAY_ON (0x04)
-#define LCD_DISPLAY_OFF (0x00)
-#define LCD_CURSOR_ON (0x02)
-#define LCD_CURSOR_OFF (0x00)
-#define LCD_BLINK_ON (0x01)
-#define LCD_BLINK_OFF (0x00)
+// flags for display on/off control
+#define LCD_DISPLAYON 0x04
+#define LCD_DISPLAYOFF 0x00
+#define LCD_CURSORON 0x02
+#define LCD_CURSOROFF 0x00
+#define LCD_BLINKON 0x01
+#define LCD_BLINKOFF 0x00
 
-// Flags for display / cursor shift
-#define LCD_DISPLAY_MOVE (0x08)
-#define LCD_CURSOR_MOVE (0x00)
-#define LCD_MOVE_RIGHT (0x04)
-#define LCD_MOVE_LEFT (0x00)
+// flags for display/cursor shift
+#define LCD_DISPLAYMOVE 0x08
+#define LCD_CURSORMOVE 0x00
+#define LCD_MOVERIGHT 0x04
+#define LCD_MOVELEFT 0x00
 
-// Flags for function set
-#define LCD_8_BIT_MODE (0x10)
-#define LCD_4_BIT_MODE (0x00)
-#define LCD_2_LINE (0x08)
-#define LCD_1_LINE (0x00)
-#define LCD_5X10_DOTS (0x04)
-#define LCD_5X8_DOTS (0x00)
+// flags for function set
+#define LCD_8BITMODE 0x10
+#define LCD_4BITMODE 0x00
+#define LCD_2LINE 0x08
+#define LCD_5x10DOTS 0x04
+#define LCD_5x8DOTS 0x00
 
-// Flags for backlight control
-#define LCD_BACKLIGHT (0x08)
-#define LCD_NOBACKLIGHT (0x00)
+// flags for backlight control
+#define LCD_BACKLIGHT 0x08
+#define LCD_NOBACKLIGHT 0x00
 
 #define En 0b00000100  // Enable bit
 #define Rw 0b00000010  // Read/Write bit
