@@ -2,10 +2,12 @@
 
 int main(){
     LCD lcd;
-    lcd.writeString("Hello World");
-    lcd.setCursor(0, 1);
-    lcd.writeString("---- serkan ---lksafhsdfsdkfısdf");
-    // lcd.control(1, 0, 1);
+    char* number;
+    for(int i = 0; i < 100; i++){
+        lcd.clear();
+        snprintf(number, 10, "Number: %d", i);
+        lcd.writeString(number);
+    }
     getchar();
     lcd.shutdownLCD();
     return 0;
