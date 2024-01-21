@@ -31,7 +31,6 @@
 // flags for display/cursor shift
 #define LCD_DISPLAYMOVE 0x08
 #define LCD_MOVERIGHT 0x04
-#define LCD_MOVELEFT 0x00
 
 // flags for function set
 #define LCD_8BITMODE 0x10

@@ -109,7 +109,7 @@ void LCD::backlight(State_e state) {
 }
 
 void LCD::scrollDisplayLeft(){
-    command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+    command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE);
 }
 
 void LCD::scrollDisplayRight(){
