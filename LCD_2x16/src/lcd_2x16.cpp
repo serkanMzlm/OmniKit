@@ -53,6 +53,7 @@ void LCD::begin(){
     sleep(5);
     write4bits(0x02 << 4);
     command(LCD_FUNCTIONSET | _displayfunction);
+    _displaycontrol = LCD_DISPLAYON;
     display(ON);
     clear();
     _displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
