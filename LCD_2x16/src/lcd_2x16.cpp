@@ -187,10 +187,8 @@ void LCD::pulseEnable(uint8_t data){
 }
 
 void LCD::command(uint8_t value, uint8_t mode){
-    uint8_t highnib = value & 0xf0;
-	uint8_t lownib = (value<<4) & 0xf0;
-	write4bits((highnib) | mode);
-	write4bits((lownib) | mode);
+	write4bits((value & 0xf0) | mode);
+	write4bits(((value<<4) & 0xf0) | mode);
 }
 
 /////////////////////////////////////////
