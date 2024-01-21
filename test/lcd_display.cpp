@@ -12,6 +12,7 @@ int main(){
         lcd.writeString(number);
         usleep(DELAY);
     }
+    lcd.clear();
     getchar();
     lcd.shutdownLCD();
     return 0;
