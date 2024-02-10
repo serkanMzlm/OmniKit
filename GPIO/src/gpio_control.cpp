@@ -11,7 +11,6 @@
 #define VALUE_MAX 30
 #define DIRECTION_MAX 35
 
-typedef enum PinMode { INPUT, OUTPUT };
 
 namespace gpio_control{
 
