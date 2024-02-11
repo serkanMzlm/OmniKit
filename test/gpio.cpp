@@ -16,11 +16,10 @@ int main(int argc, char** argv){
         usleep(DELAY);
         exportPin(pin);
         usleep(DELAY);
-        directionPin(pin, INPUT);
+        directionPin(pin, OUTPUT);
         usleep(DELAY);
         writePin(pin, value);
         usleep(DELAY);
-        std::cout << readPin(pin);
     }
 
     return 0;
