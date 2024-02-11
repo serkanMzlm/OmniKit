@@ -9,8 +9,8 @@ int main(int argc, char** argv){
     std::cout << "Toplam argüman sayısı: " << argc << std::endl;
     std::cout << "Program adı: " << argv[0] << std::endl;
     if (argc > 2) {
-        int pin = atoi(argv[1].c_str());
-        int value = atoi(argv[2].c_str());
+        int pin = atoi(argv[1]);
+        int value = atoi(argv[2]);
 
         unexportPin(pin);
         usleep(DELAY);
