@@ -16,9 +16,9 @@ int main(int argc, char** argv){
         usleep(DELAY);
         exportPin(pin);
         usleep(DELAY);
-        directionPin(pin, IN);
+        directionPin(pin, INPUT);
         usleep(DELAY);
-        std::cout << read(pin);
+        std::cout << readPin(pin);
     }
 
     return 0;
