@@ -8,8 +8,8 @@ int main(int argc, char** argv){
     std::cout << "Program adı: " << argv[0] << std::endl;
     if (argc > 2) {
         exportPin(std::stoi(argv[1]));
-        directionPin(std::stoi(argv[1]), OUTPUT);
-        writePin(std::stoi(argv[1]), std::stoi(argv[2]));
+        directionPin(17, OUTPUT);
+        writePin(17, 0);
     }
 
     return 0;
