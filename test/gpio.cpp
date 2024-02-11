@@ -3,6 +3,7 @@
 
 #include "gpio_control.hpp"
 
+#define DELAY 10000
 
 int main(int argc, char** argv){
     std::cout << "Toplam argüman sayısı: " << argc << std::endl;
