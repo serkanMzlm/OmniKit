@@ -9,13 +9,16 @@ int main(int argc, char** argv){
     std::cout << "Toplam argüman sayısı: " << argc << std::endl;
     std::cout << "Program adı: " << argv[0] << std::endl;
     if (argc > 2) {
-        unexportPin(std::stoi(argv[1]));
+        int pin = atoi(argv[1].c_str());
+        int value = atoi(argv[2].c_str());
+
+        unexportPin(pin);
         usleep(DELAY);
-        exportPin(std::stoi(argv[1]));
+        exportPin(pin);
         usleep(DELAY);
-        directionPin(std::stoi(argv[1]), OUTPUT);
+        directionPin(pin, OUTPUT);
         usleep(DELAY);
-        writePin(std::stoi(argv[1]), std::stoi(argv[0]));
+        writePin(pin, value);
     }
 
     return 0;
