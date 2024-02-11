@@ -3,7 +3,7 @@
 
 #include "gpio_control.hpp"
 
-#define DELAY 10000
+#define DELAY 100000
 
 int main(int argc, char** argv){
     std::cout << "Toplam argüman sayısı: " << argc << std::endl;
@@ -16,9 +16,9 @@ int main(int argc, char** argv){
         usleep(DELAY);
         exportPin(pin);
         usleep(DELAY);
-        directionPin(pin, OUTPUT);
+        directionPin(pin, IN);
         usleep(DELAY);
-        writePin(pin, value);
+        std::cout << read(pin);
     }
 
     return 0;
