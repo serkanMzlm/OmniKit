@@ -18,6 +18,8 @@ int main(int argc, char** argv){
         usleep(DELAY);
         directionPin(pin, INPUT);
         usleep(DELAY);
+        writePin(pin, value);
+        usleep(DELAY);
         std::cout << readPin(pin);
     }
 
