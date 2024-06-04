@@ -1,4 +1,4 @@
-### SENSORS
+## SENSORS DRIVERS
 
 - Vl53l5cx
 - MPU6050
@@ -13,11 +13,10 @@
     echo 79 > /sys/class/gpio/unexport
     ```
 
-
+### VL53L5CX Linux Drivers
 https://www.st.com/en/embedded-software/stsw-img025.html#featured_resources-0
 
 ### Build Project
-
 ```
 cmake -DCMAKE_INSTALL_PREFIX=../install ..
 make 
