@@ -16,7 +16,7 @@
 
 https://www.st.com/en/embedded-software/stsw-img025.html#featured_resources-0
 
-### Build
+### Build Project
 
 ```
 cmake -DCMAKE_INSTALL_PREFIX=../install ..
