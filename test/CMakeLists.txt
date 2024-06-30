@@ -3,10 +3,10 @@ project(test)
 
 if(CMAKE_PREFIX_PATH)
     set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_CURRENT_SOURCE_DIR}/MyLibrary/install/lib/cmake")
-    # set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}; $ENV{SECURE_DRIVE_VEHICLE_PATH}")
+    # set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}; $ENV{VEHICLE_CONTRAL_SOFTWARE}")
 else()
     # set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/MyLibrary/install/lib/cmake")
-    set(CMAKE_PREFIX_PATH "$ENV{SECURE_DRIVE_VEHICLE_PATH}/install/lib/cmake")
+    set(CMAKE_PREFIX_PATH "$ENV{VEHICLE_CONTRAL_SOFTWARE}/install/lib/cmake")
     message("Path: ${CMAKE_PREFIX_PATH}")
 endif()
 
