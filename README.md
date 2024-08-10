@@ -1,4 +1,4 @@
-## SENSORS DRIVERS
+## DRIVERS
 
 - Vl53l5cx
 - MPU6050
