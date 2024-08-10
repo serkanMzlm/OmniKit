@@ -6,6 +6,7 @@
 - RFID
 - Baro
 - GPIO
+
     ```bash
     echo 79 > /sys/class/gpio/export
     echo out > /sys/class/gpio/gpio79/direction
@@ -14,10 +15,12 @@
     ```
 
 ### VL53L5CX Linux Drivers
-https://www.st.com/en/embedded-software/stsw-img025.html#featured_resources-0
+
+<https://www.st.com/en/embedded-software/stsw-img025.html#featured_resources-0>
 
 ### Build Project
-```
+
+```bash
 cmake -DCMAKE_INSTALL_PREFIX=../install ..
 make 
 make install
@@ -27,7 +30,7 @@ make install
 
 - `--no-print-directory` Option: When this option is active, the make command suppresses such messages. This is useful for users who want to see only the important information during the build process.
 
-```
+```bash
 make --no-print-directory
 ```
 
