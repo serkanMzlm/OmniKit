@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include "low_high_pass_filter.hpp"
 
 float lowPassFilter(float currentInput, float previousOutput, float alpha)
