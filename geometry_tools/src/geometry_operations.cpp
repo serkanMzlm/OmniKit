@@ -49,6 +49,31 @@ void quaternionToEuler(double *quaternion, double* euler)
     euler[2] = std::atan2(siny_cosp, cosy_cosp);
 }
 
+void quaternionToEuler(float *quaternion, float* euler)
+{
+    float x = quaternion[0];
+    float y = quaternion[1];
+    float z = quaternion[2];
+    float w = quaternion[3];
+
+    // Roll (x-axis rotation)
+    float sinr_cosp = 2.0 * (w * x + y * z);
+    float cosr_cosp = 1.0 - 2.0 * (x * x + y * y);
+    euler[0] = std::atan2(sinr_cosp, cosr_cosp);
+
+    // Pitch (y-axis rotation)
+    float sinp = 2.0 * (w * y - z * x);
+    if (std::abs(sinp) >= 1)
+        euler[1] = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    else
+        euler[1] = std::asin(sinp);
+
+    // Yaw (z-axis rotation)
+    float siny_cosp = 2.0 * (w * z + x * y);
+    float cosy_cosp = 1.0 - 2.0 * (y * y + z * z);
+    euler[2] = std::atan2(siny_cosp, cosy_cosp);
+}
+
 void cartesianToSpherical(float *cart_data, float *spe_data)
 {
     // Calculate radius

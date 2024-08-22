@@ -19,6 +19,7 @@ void eulerToQuaternion(double* euler, double *quaternion);
  * @param euler A double array of size 3 to store the resulting Euler angles (roll, pitch, yaw) in radians.
  */
 void quaternionToEuler(double *quaternion, double* euler);
+void quaternionToEuler(float *quaternion, float* euler);
 
 /**
  * @brief Converts Cartesian coordinates to spherical coordinates.
