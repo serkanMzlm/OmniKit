@@ -37,3 +37,6 @@ make -s
 ```
 
 When entering the command `cmake -DCMAKE_INSTALL_PREFIX=../install ..`, the reason for doing so is to specify the directory where we want to install the file. If not specified, installation will default to the `/usr/local/lib/` directory, requiring root permissions during make install. Otherwise, you'll encounter a **Permission denied** error.
+
+
+-DUSE_CORE=ON

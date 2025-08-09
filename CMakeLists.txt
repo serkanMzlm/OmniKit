@@ -1,46 +1,48 @@
 cmake_minimum_required(VERSION 3.1)
-project(drivers)
+project(OmniKit)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-option(TEST_MODE "Enable test mode" OFF)
+list(APPEND CMAKE_MODULE_PATH
+    ${CMAKE_SOURCE_DIR}/cmake
+)
 
-set(USE_MPU6050 false)
-set(USE_BMP180 false)
-set(USE_LCD false)
-set(USE_VL53L5CX false)
-set(USE_PMW3901 false)
-set(USE_GPIO false)
-set(USE_MATH_TOOLS true)
-set(USE_GEOMETRY_TOOLS true)
-set(USE_FILTER_TOOLS true)
+include(ColorMessage)
 
-set(FEATURES)
-list(APPEND FEATURES "USE_MPU6050"                   "imu")
-list(APPEND FEATURES "USE_BMP180"              "barometer")
-list(APPEND FEATURES "USE_LCD"                   "display")
-list(APPEND FEATURES "USE_VL53L5CX"             "distance")
-list(APPEND FEATURES "USE_PMW3901"          "optical_flow")
-list(APPEND FEATURES "USE_GPIO"                     "gpio")
-list(APPEND FEATURES "USE_MATH_TOOLS"         "math_tools")
-list(APPEND FEATURES "USE_GEOMETRY_TOOLS" "geometry_tools")
-list(APPEND FEATURES "USE_FILTER_TOOLS"     "filter_tools")
+option(TEST_MODE   "Examples-only build"           OFF)
+option(USE_CORE    "Enable core features"          ON)
+option(USE_DRIVERS "Enable drivers"                OFF)
+option(USE_CONTROL "Enable control features"       OFF)
 
-list(LENGTH FEATURES LIST_LENGTH)
-math(EXPR ADJUSTED_LENGTH "${LIST_LENGTH} - 2")
+list(APPEND FEATURES "USE_CORE"     "core")
+list(APPEND FEATURES "USE_DRIVERS"  "drivers")
+list(APPEND FEATURES "USE_CONTROL"  "control")
 
-foreach(i RANGE 0 ${ADJUSTED_LENGTH} 2)
-    list(GET FEATURES ${i} FEATURE)
-    math(EXPR j "${i} + 1") 
-    list(GET FEATURES ${j} DIR)
-    if(${${FEATURE}})
-        add_subdirectory(${DIR})
-    endif()
-endforeach()
-
-if(${TEST_MODE})
-    message("Test mode is enabled")
-    add_subdirectory(test)
+if(TEST_MODE)
+  message("Test mode is enabled")
+  add_subdirectory(examples)
+  return()
 endif()
+
+add_subdirectory(core) 
+add_subdirectory(drivers) 
+add_subdirectory(control) 
+
+
+####################################################################
+##  The code was written with if to make it more understandable   ##
+####################################################################
+
+# set(FEATURES)
+# list(LENGTH FEATURES LIST_LENGTH)
+# math(EXPR ADJUSTED_LENGTH "${LIST_LENGTH} - 2")
+# foreach(i RANGE 0 ${ADJUSTED_LENGTH} 2)
+#     list(GET FEATURES ${i} FEATURE)
+#     math(EXPR j "${i} + 1") 
+#     list(GET FEATURES ${j} DIR)
+#     if(${${FEATURE}})
+#         add_subdirectory(${DIR})
+#     endif()
+# endforeach()
