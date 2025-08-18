@@ -1,6 +1,7 @@
-#include "scalar.hpp"
-
 #define THREEHALFS (0x5f3759df)
+
+#include <cmath>
+#include <cstdint>
 
 float fastInverseSqrt(float number)
 {

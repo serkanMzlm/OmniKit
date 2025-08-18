@@ -1,12 +1,8 @@
-file(GLOB_RECURSE OMNIKIT_FILTER_COMPLEMENTARY_SOURCES complementary/*.cpp)
-file(GLOB_RECURSE OMNIKIT_FILTER_MAHONY_SOURCES complementary/*.cpp)
-file(GLOB_RECURSE OMNIKIT_FILTER_KALMAN_SOURCES complementary/*.cpp)
+file(GLOB_RECURSE OMNIKIT_FILTER_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 find_package (Eigen3 3.3 REQUIRED)
 
-add_library(omnikit_filter ${OMNIKIT_FILTER_COMPLEMENTARY_SOURCES}
-                            ${OMNIKIT_FILTER_MAHONY_SOURCES}
-                            ${OMNIKIT_FILTER_KALMAN_SOURCES})
+add_library(omnikit_filter ${OMNIKIT_FILTER_SOURCES})
 
 target_link_libraries(omnikit_filter PUBLIC Eigen3::Eigen)
 

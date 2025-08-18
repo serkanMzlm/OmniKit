@@ -44,10 +44,4 @@ constexpr T remap(T value, T in_min, T in_max, T out_min, T out_max) noexcept
     return out_min + (value - in_min) * (out_max - out_min) / (in_max - in_min);
 }
 
-/// @brief  Computes the fast inverse square root of a number.
-/// @param number The input number for which the inverse square root is to be calculated.
-/// @return The approximate inverse square root of the input number.
-/// @note   This function uses a fast approximation method, which may not be as accurate as
-float fastInverseSqrt(float number);
-
 #endif // SCALAR_HPP

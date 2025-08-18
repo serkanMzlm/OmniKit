@@ -2,5 +2,8 @@ if(NOT USE_DRIVERS)
   return()
 endif()
 
-message("Core features are enabled")
-# add_subdirectory(math)
+message("${Cyan}##############################################")
+message("${Cyan}#         Drivers Features Are Enabled       #")
+message("${Cyan}##############################################")
+
+add_subdirectory(comms)

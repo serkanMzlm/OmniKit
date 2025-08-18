@@ -18,7 +18,7 @@ CMAKE_OPTIONS := -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(abspath $(I
 MAKE_OPTIONS := --no-print-directory
 
 .PHONY: all
-all: ${BUILD_DIR}/Makefile build install update_bashrc
+all: build install update_bashrc
 
 $(BUILD_DIR)/Makefile:
 	@echo "Creating build directory if not exists..."
@@ -51,7 +51,7 @@ reconfigure:
 	@cd $(BUILD_DIR) && cmake $(CMAKE_OPTIONS) .. || { echo "$(RED)CMake reconfiguration failed!$(RESET)"; exit 1; }
 
 .PHONY: build
-build:
+build: ${BUILD_DIR}/Makefile
 	@echo "$(GREEN)Building the project..."
 	@echo "Building the project without reconfiguring...$(RESET)"
 	@$(MAKE) $(MAKE_OPTIONS) -C $(BUILD_DIR)

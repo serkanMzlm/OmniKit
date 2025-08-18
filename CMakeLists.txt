@@ -9,11 +9,12 @@ list(APPEND CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
 )
 
+include(InstallLibrary)
 include(ColorMessage)
 
 option(TEST_MODE   "Examples-only build"           OFF)
 option(USE_CORE    "Enable core features"          ON)
-option(USE_DRIVERS "Enable drivers"                OFF)
+option(USE_DRIVERS "Enable drivers"                ON)
 option(USE_CONTROL "Enable control features"       OFF)
 
 list(APPEND FEATURES "USE_CORE"     "core")
