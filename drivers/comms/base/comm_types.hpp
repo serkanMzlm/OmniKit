@@ -1,0 +1,6 @@
+#ifndef COMMS_TYPES_HPP
+#define COMMS_TYPES_HPP
+
+
+
+#endif // COMMS_TYPES_HPP

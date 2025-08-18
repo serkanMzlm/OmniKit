@@ -1,6 +1,7 @@
-#include "scalar.hpp"
-
 #define THREEHALFS (0x5f3759df)
+
+#include <cmath>
+#include <cstdint>
 
 float fastInverseSqrt(float number)
 {
@@ -8,8 +9,8 @@ float fastInverseSqrt(float number)
     {
         float f;
         uint32_t i;
-    } conv = {.f = number};
-
+    } conv;
+    conv.i = number;
     // Step 1: Initial Value and Bit Manipulation
     conv.i = THREEHALFS - (conv.i >> 1);
 

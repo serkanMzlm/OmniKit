@@ -1,4 +1,4 @@
-file(GLOB_RECURSE OMNIKIT_GEOMETRY_SOURCES src/*.cpp)
+file(GLOB_RECURSE OMNIKIT_GEOMETRY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 find_package (Eigen3 3.3 REQUIRED)
 
@@ -11,20 +11,4 @@ target_include_directories(omnikit_geometry PUBLIC
 
 target_link_libraries(omnikit_geometry PUBLIC Eigen3::Eigen)
 
-install(TARGETS omnikit_geometry
-    EXPORT omnikit_geometry-targets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
-)
-
-install(DIRECTORY inc/
-        DESTINATION include/omnikit/geometry
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-)
-        
-install(EXPORT omnikit_geometry-targets
-    FILE omnikit_geometry-config.cmake
-    DESTINATION lib/cmake/omnikit_geometry
-)
+install_library(omnikit_geometry ${CMAKE_CURRENT_SOURCE_DIR})

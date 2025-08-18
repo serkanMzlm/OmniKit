@@ -2,18 +2,28 @@ cmake_minimum_required(VERSION 3.1)
 project(OmniKit)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -pedantic)
+  add_compile_options(-Werror)
+  add_compile_options(-Werror=return-type)
+  add_compile_options(-Werror=address)
+  add_compile_options(-Werror=sequence-point)
+  add_compile_options(-Werror=format)
+  add_compile_options(-Werror=array-bounds)
+  add_compile_options(-Werror=enum-compare)
+  add_compile_options(-Werror=init-self)
+  add_compile_options(-Werror=logical-op)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
 )
 
+include(InstallLibrary)
 include(ColorMessage)
 
 option(TEST_MODE   "Examples-only build"           OFF)
 option(USE_CORE    "Enable core features"          ON)
-option(USE_DRIVERS "Enable drivers"                OFF)
+option(USE_DRIVERS "Enable drivers"                ON)
 option(USE_CONTROL "Enable control features"       OFF)
 
 list(APPEND FEATURES "USE_CORE"     "core")
