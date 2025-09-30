@@ -5,8 +5,6 @@
 #include <string>
 #include <cstdint>
 
-#include "comm_types.hpp"
-
 class BusInterface
 {
 public:
