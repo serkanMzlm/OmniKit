@@ -1,9 +1,6 @@
 #ifndef __LCD_TYPE_HPP__
 #define __LCD_TYPE_HPP__
 
-#define OK 0
-#define FAILED 1
-
 #define LCD_ROW 2
 #define LCD_COLUMN 16
 #define LCD_SLAVE_ADDR (0x27)
@@ -43,10 +40,32 @@
 #define LCD_BACKLIGHT 0x08
 #define LCD_NOBACKLIGHT 0x00
 
-#define En 0b00000100  // Enable bit
-#define Rw 0b00000010  // Read/Write bit
-#define Rs 0b00000001  // Register select bit
+#define En 0b00000100 // Enable bit
+#define Rw 0b00000010 // Read/Write bit
+#define Rs 0b00000001 // Register select bit
 
-typedef enum {ON, OFF} State_e;
+enum class Switch : uint8_t
+{
+    On = 0x00,
+    Off = 0x01,
+};
+
+enum class Status : uint8_t
+{
+    Success = 0,
+    Waiting,
+    Failure,
+    Aborted,
+    Retrying,
+    PortClosed,
+    WriteFail,
+    ParseFail,
+    ChecksumFail,
+    Unsupported,
+    OutOfRange,
+    Error,
+    Warning,
+    Timeout
+};
 
 #endif

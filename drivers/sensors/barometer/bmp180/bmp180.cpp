@@ -1,40 +1,38 @@
-extern "C"{
+extern "C"
+{
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <i2c/smbus.h>
-#include <linux/i2c-dev.h>
-#include <sys/ioctl.h>
 #include <unistd.h>
 }
 
+#include "bus_interface.hpp"
+#include "i2c.hpp"
+
 #include "bmp180.hpp"
 
-BMP180::BMP180(int bus_number){
-    snprintf(filename, 11, "/dev/i2c-%d", bus_number);
-    if(initI2c(filename, BMP180_SLAVE_ADDR) < 0){  exit(-1); }
-
-}
-
-BMP180::~BMP180(){
-    close(fd);
-}
-
-int BMP180::initI2c(const char * filename, int addr){
-    fd = open(filename, O_RDWR);
-    if(fd < -1){
-        reportError(errno, "Could not open the I2C device");
-        return -1;
+BMP180::BMP180(int bus_number) : _addr(BMP180_SLAVE_ADDR),
+ _i2c(std::make_shared<I2C>(bus_number))
+{
+    if (init() != Status::Success)
+    {
+        exit(-1);
     }
-    if(ioctl(fd, I2C_SLAVE, addr) < 0){
-        reportError(errno, "Could not open the I2C device address");
-        close(fd);
-        return -1;
-    }
-    return 1;
 }
 
-void BMP180::readCalibrationCoef(){
+Status BMP180::init()
+{
+    _i2c->setAddress(_addr);
+    if (_i2c->connect())
+    {
+        reportError(errno, "Failed  to started I2C.");
+        return Status::Failure;
+    }
+    return Status::Success;
+}
+
+void BMP180::readCalibrationCoef()
+{
     AC1 = read16(BMP180_AC1_H);
     AC2 = read16(BMP180_AC2_H);
     AC3 = read16(BMP180_AC3_H);
@@ -50,16 +48,23 @@ void BMP180::readCalibrationCoef(){
     MD = read16(BMP180_MD_H);
 }
 
-int16_t BMP180::readRawTemperature(){
-    int result = i2c_smbus_write_byte_data(fd, BMP180_CONTROL, BMP180_TEMP_CMD);
-    if(result < 0) reportError(errno);
-    usleep(5*1000);
-    return  read16(BMP180_TEMP_H);
+int16_t BMP180::readRawTemperature()
+{
+    int result = _i2c->writeRegByte(BMP180_CONTROL, BMP180_TEMP_CMD);
+    if (result < 0)
+    {
+        reportError(errno);
+    }
+    usleep(5 * 1000);
+    return read16(BMP180_TEMP_H);
+    return 0;
 }
 
-uint32_t BMP180::readRawPressure(){
-    i2c_smbus_write_byte_data(fd, BMP180_CONTROL, BMP180_READ_PRESSURE_CMD + (mode << 6));
-    switch (mode) {
+uint32_t BMP180::readRawPressure()
+{
+    _i2c->writeRegByte(BMP180_CONTROL, BMP180_READ_PRESSURE_CMD + (mode << 6));
+    switch (mode)
+    {
     case 0:
         usleep(5 * 1000);
         break;
@@ -71,7 +76,7 @@ uint32_t BMP180::readRawPressure(){
         break;
     case 3:
         usleep(26 * 1000);
-        break;    
+        break;
     }
 
     uint32_t raw = read16(BMP180_PRESSUREDATA);
@@ -81,29 +86,32 @@ uint32_t BMP180::readRawPressure(){
     return raw;
 }
 
-int32_t BMP180::computeB5(int32_t UT){
+int32_t BMP180::computeB5(int32_t UT)
+{
     int32_t X1 = (UT - (int32_t)AC6) * ((int32_t)AC5) >> 15;
     int32_t X2 = ((int32_t)MC << 11) / (X1 + (int32_t)MD);
     return X1 + X2;
 }
 
-float BMP180::readTemperature(){
+float BMP180::readTemperature()
+{
     int32_t UT, B5;
     float temp;
     UT = readRawTemperature();
     B5 = computeB5(UT);
     temp = ((B5 + 8) >> 4);
     temp /= 10.0;
-    return temp; 
+    return temp;
 }
 
-int32_t BMP180::readPressure(){
+int32_t BMP180::readPressure()
+{
     int32_t UT, UP, p;
     int32_t B3, B5, B6;
     uint32_t B4, B7;
     int32_t X1, X2, X3;
     UT = readRawTemperature();
-    UP = readRawPressure();   
+    UP = readRawPressure();
     B5 = computeB5(UT);
     B6 = B5 - 4000;
     X1 = ((int32_t)B2 * ((B6 * B6) >> 12)) >> 11;
@@ -117,9 +125,12 @@ int32_t BMP180::readPressure(){
     B4 = ((uint32_t)AC4 * (uint32_t)(X3 + 32768)) >> 15;
     B7 = ((uint32_t)UP - B3) * (uint32_t)(50000UL >> mode);
 
-    if (B7 < 0x80000000) {
+    if (B7 < 0x80000000)
+    {
         p = (B7 * 2) / B4;
-    } else {
+    }
+    else
+    {
         p = (B7 / B4) * 2;
     }
     X1 = (p >> 8) * (p >> 8);
@@ -130,19 +141,21 @@ int32_t BMP180::readPressure(){
     return p;
 }
 
-float BMP180::readAltitude(float sealevelPressure){
+float BMP180::readAltitude(float sealevelPressure)
+{
     float pressure = readPressure();
     float altitude = 44330 * (1.0 - pow(pressure / sealevelPressure, 0.1903));
     return altitude;
 }
 
-float BMP180::readSealevelPressure(float altitude_meters){
+float BMP180::readSealevelPressure(float altitude_meters)
+{
     float pressure = readPressure();
     return (int32_t)(pressure / pow(1.0 - altitude_meters / 44330, 5.255));
 }
 
-
-void BMP180::prinfCalbrationCoef() const{
+void BMP180::prinfCalbrationCoef() const
+{
     std::cout << "AC1: " << AC1 << std::endl;
     std::cout << "AC2: " << AC2 << std::endl;
     std::cout << "AC3: " << AC3 << std::endl;
@@ -152,22 +165,25 @@ void BMP180::prinfCalbrationCoef() const{
 
     std::cout << "B1: " << B1 << std::endl;
     std::cout << "B2: " << B2 << std::endl;
-    
+
     std::cout << "MB: " << MB << std::endl;
     std::cout << "MC: " << MC << std::endl;
     std::cout << "MD: " << MD << std::endl;
 }
 
-void BMP180::reportError(int error, std::string error_info) const{
-    std::cerr << "Error! " << error_info << ": " << strerror(error); 
+void BMP180::reportError(int error, std::string error_info) const
+{
+    std::cerr << "Error! " << error_info << ": " << strerror(error);
 }
 
-int8_t BMP180::read8(uint8_t reg){
-    return i2c_smbus_read_byte_data(fd, reg);
+int8_t BMP180::read8(uint8_t reg)
+{
+    return static_cast<int8_t>(_i2c->readRegByte(reg));
 }
 
-int16_t BMP180::read16(uint8_t reg){
-    int16_t reg_h = i2c_smbus_read_byte_data(fd, reg);
-    int16_t reg_l = i2c_smbus_read_byte_data(fd, reg + 1);
+int16_t BMP180::read16(uint8_t reg)
+{
+    int16_t reg_h = _i2c->readRegByte(reg);
+    int16_t reg_l = _i2c->readRegByte(reg + 1);
     return reg_l | reg_h << 8;
 }

@@ -49,7 +49,10 @@ bool Spi::validate(const SpiOptions &o)
 std::string Spi::pathFrom(const SpiOptions &opt)
 {
     if (!opt.devPath.empty())
+    {
         return opt.devPath;
+    }
+    
     char p[32];
     std::snprintf(p, sizeof(p), "/dev/spidev%d.%d", opt.bus, opt.cs);
     return std::string(p);

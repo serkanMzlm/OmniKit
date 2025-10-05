@@ -26,4 +26,22 @@
 #define BMP180_READ_PRESSURE_CMD 0x34
 #define BMP180_PRESSUREDATA 0xF6
 
+enum class Status : uint8_t
+{
+    Success = 0,
+    Waiting,
+    Failure,
+    Aborted,
+    Retrying,
+    PortClosed,
+    WriteFail,
+    ParseFail,
+    ChecksumFail,
+    Unsupported,
+    OutOfRange,
+    Error,
+    Warning,
+    Timeout
+};
+
 #endif

@@ -4,13 +4,16 @@
 #include <iostream>
 #include <cstring>
 #include <cmath>
+#include <memory>
 #include "bmp180_type.hpp"
+
+class I2C;
 
 class BMP180{
 public:
     BMP180(int bus_number = 1);
-    ~BMP180();
-    int initI2c(const char * filename, int addr);
+    ~BMP180() = default;
+    Status init();
 
     void readCalibrationCoef();
     int16_t readRawTemperature();
@@ -28,14 +31,14 @@ private:
     int16_t read16(uint8_t reg);
     int32_t computeB5(int32_t UT);
 private:
-    int fd;
-    char filename[11];
     uint8_t mode = 0;
     int16_t temp_data;
     int16_t AC1, AC2, AC3;
     uint16_t AC4, AC5, AC6;
     int16_t B1, B2;
     int16_t MB, MC, MD;
+    uint8_t _addr;
+    std::shared_ptr<I2C> _i2c {nullptr};
 };
 
 #endif

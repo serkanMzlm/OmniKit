@@ -214,7 +214,7 @@ int Udp::read(uint8_t *buffer, size_t size)
         return -1;
     }
 
-    int retval = poll(_pollfds, 1, 100);
+    int retval = poll(_pollfds, 1, 5);
     if (retval < 0)
     {
         if (errno == EINTR)

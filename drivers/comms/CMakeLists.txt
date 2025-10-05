@@ -14,6 +14,10 @@ add_library(omnikit_comms STATIC
 
 target_include_directories(omnikit_comms PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/base>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/uart>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/udp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/i2c>  
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/spi>
     $<INSTALL_INTERFACE:include/>
 )
 

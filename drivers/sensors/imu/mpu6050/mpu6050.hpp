@@ -4,14 +4,17 @@
 #include <string>
 #include <iostream>
 #include <unordered_map>
+#include <memory>
 
 #include "mpu6050_type.hpp"
+
+class I2C;
 
 class MPU6050{
 public:
     MPU6050(int bus_number = 1);
-    ~MPU6050();
-    int initI2c(const char* filename, int mpu_addr);
+    ~MPU6050() = default;
+    Status init();
 
     void readRangeConfig();
     void setGyroscopeRange(GyroRange range);
@@ -39,7 +42,8 @@ public:
     void printAngularVelocity() const;
     void reportError(int error, std::string error_info = "Errno");
 private:
-    int fd;
+    uint8_t _addr;
+    std::shared_ptr<I2C> _i2c {nullptr};
     int barWidth = 50;
     char filename[11];
     bool calibrated = false;

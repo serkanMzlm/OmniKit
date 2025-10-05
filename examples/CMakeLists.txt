@@ -7,6 +7,7 @@ find_package(omnikit_math REQUIRED)
 find_package(omnikit_utils REQUIRED)
 find_package(omnikit_geometry REQUIRED)
 find_package(omnikit_comms REQUIRED)
+find_package(omnikit_display REQUIRED)
 
 find_package (Eigen3 3.3 REQUIRED)
 
@@ -16,4 +17,5 @@ target_link_libraries(main
     omnikit_utils 
     omnikit_geometry
     omnikit_comms
+    omnikit_display
 )

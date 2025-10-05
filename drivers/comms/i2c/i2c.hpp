@@ -46,7 +46,7 @@ public:
 
     bool setAddress(uint16_t address, bool ten_bit = false);
     bool writeRegByte(uint8_t reg, uint8_t val);
-    bool readRegByte(uint8_t reg);
+    int readRegByte(uint8_t reg);
     ssize_t writeReg(uint8_t reg, const uint8_t* data, size_t len);
     ssize_t readReg(uint8_t reg, uint8_t* data, size_t len);
 

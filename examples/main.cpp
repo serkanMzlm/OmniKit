@@ -7,6 +7,7 @@
 #include "omnikit/comms/base/bus_interface.hpp"
 #include "omnikit/comms/uart/uart.hpp"
 #include "omnikit/comms/udp/udp.hpp"
+#include "omnikit/display/lcd_2x16/lcd_2x16.hpp"
 
 int main()
 {

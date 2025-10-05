@@ -118,10 +118,7 @@ void I2C::disconnect()
 
 int I2C::write(const uint8_t *data, size_t size)
 {
-    std::cerr << "I2C::write not implemented for register-based writes. Use writeReg instead.\n";
-    (void)data;
-    (void)size;
-    return -1;
+    return ::write(_fd, data, size);
 }
 
 int I2C::read(uint8_t *buffer, size_t size)
@@ -141,9 +138,7 @@ int I2C::readByte(uint8_t *byte)
 
 int I2C::writeByte(const uint8_t *byte)
 {
-    std::cerr << "I2C::writeByte not implemented for register-based writes. Use writeRegByte(reg, val) instead.\n";
-    (void)byte;
-    return -1;
+    return ::write(_fd, byte, 1);
 }
 
 bool I2C::setAddress(uint16_t address, bool ten_bit)
@@ -167,16 +162,15 @@ bool I2C::writeRegByte(uint8_t reg, uint8_t val)
     return (rc == 0);
 }
 
-bool I2C::readRegByte(uint8_t reg)
+int I2C::readRegByte(uint8_t reg)
 {
     std::lock_guard<std::mutex> lk(_mtx);
-    if (!isOpenPort())
+    if (!isOpenPort() || _fd < 0) 
     {
         return false;
     }
 
-    int rc = ::i2c_smbus_read_byte_data(_fd, reg);
-    return (rc < 0);
+    return ::i2c_smbus_read_byte_data(_fd, reg);
 }
 
 ssize_t I2C::writeReg(uint8_t reg, const uint8_t *data, size_t len)
@@ -199,7 +193,9 @@ ssize_t I2C::writeReg(uint8_t reg, const uint8_t *data, size_t len)
 ssize_t I2C::readReg(uint8_t reg, uint8_t *data, size_t len)
 {
     if (!data || len == 0)
+    {
         return 0;
+    }
     std::lock_guard<std::mutex> lk(_mtx);
     if (!isOpenPort())
     {
