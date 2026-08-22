@@ -1,42 +1,63 @@
-## DRIVERS
+# OmniKit
 
-- Vl53l5cx
-- MPU6050
-- Optical Flow
-- RFID
-- Baro
-- GPIO
-
-    ```bash
-    echo 79 > /sys/class/gpio/export
-    echo out > /sys/class/gpio/gpio79/direction
-    echo 1 > /sys/class/gpio/gpio79/value
-    echo 79 > /sys/class/gpio/unexport
-    ```
-
-### VL53L5CX Linux Drivers
-
-<https://www.st.com/en/embedded-software/stsw-img025.html#featured_resources-0>
-
-### Build Project
-
-```bash
-cmake -DCMAKE_INSTALL_PREFIX=../install ..
-make 
-make install
 ```
-
-- Default Behavior: When you run the make command, it displays messages like Entering directory '/path' and Leaving directory '/path' whenever it enters or exits a subdirectory. These messages indicate which directories make is operating in.
-
-- `--no-print-directory` Option: When this option is active, the make command suppresses such messages. This is useful for users who want to see only the important information during the build process.
-
-```bash
-make --no-print-directory
-#or
-make -s
+OmniKit/
+├── CMakeLists.txt
+├── README.md
+|
+├── include/
+│   └── omnikit/
+│       │
+│       ├── core/
+│       │   ├── types.h         # omk_real_t, ortak struct'lar
+│       │   ├── error.h         # hata kodları
+│       │   └── version.h
+│       │
+│       ├── math/
+│       │   ├── scalar.h        # clamp, lerp, wrap_angle, sign, vs.
+│       │   ├── vector.h
+│       │   ├── matrix.h
+│       │   └── quaternion.h
+│       │
+│       ├── time/
+│       │   ├── clock.h         # platforma özgü zaman okuma (port edilecek tek yer)
+│       │   ├── timer.h         # periyodik görev / kronometre
+│       │   └── delay.h
+│       │
+│       ├── geometry/
+│       │   ├── rotation.h      # euler <-> quaternion <-> matrix
+│       │   ├── transform.h     # homojen dönüşüm / pose
+│       │   └── frame.h         # referans çerçeveler arası dönüşüm
+│       │
+│       ├── control/
+│       │   ├── controller_base.h  # ortak arayüz: init/update/reset
+│       │   ├── pid.h
+│       │   ├── lqr.h
+│       │   └── state_space.h      # A,B,C,D modeli, gözlemci
+│       │
+│       └── filter/
+│           ├── low_pass.h
+│           ├── moving_average.h
+│           ├── median.h
+│           └── kalman.h
+│
+├── src/                        # include/ ile birebir aynı klasör ağacı, .c/.cpp dosyaları
+│   ├── core/...
+│   ├── math/...
+│   ├── time/...
+│   ├── geometry/...
+│   ├── control/...
+│   └── filter/...
+│
+├── tests/
+│   ├── test_pid.c
+│   ├── test_kalman.c
+│   └── ...
+│
+├── examples/
+│   ├── pid_motor_control/
+│   └── imu_orientation_filter/
+│
+└── docs/
+    └── api/
 ```
-
-When entering the command `cmake -DCMAKE_INSTALL_PREFIX=../install ..`, the reason for doing so is to specify the directory where we want to install the file. If not specified, installation will default to the `/usr/local/lib/` directory, requiring root permissions during make install. Otherwise, you'll encounter a **Permission denied** error.
-
-
--DUSE_CORE=ON

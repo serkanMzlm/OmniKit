@@ -1,58 +1,84 @@
-cmake_minimum_required(VERSION 3.1)
-project(OmniKit)
+cmake_minimum_required(VERSION 3.14)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -pedantic)
-  add_compile_options(-Werror)
-  add_compile_options(-Werror=return-type)
-  add_compile_options(-Werror=address)
-  add_compile_options(-Werror=sequence-point)
-  add_compile_options(-Werror=format)
-  add_compile_options(-Werror=array-bounds)
-  add_compile_options(-Werror=enum-compare)
-  add_compile_options(-Werror=init-self)
-  add_compile_options(-Werror=logical-op)
-endif()
-
-list(APPEND CMAKE_MODULE_PATH
-    ${CMAKE_SOURCE_DIR}/cmake
+project(omnikit
+    VERSION 0.1.0
+    DESCRIPTION "A reusable C++ utility library: math, logging, filters"
+    LANGUAGES CXX
 )
 
-include(InstallLibrary)
-include(ColorMessage)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(TEST_MODE   "Examples-only build"           OFF)
-option(USE_CORE    "Enable core features"          ON)
-option(USE_DRIVERS "Enable drivers"                ON)
-option(USE_CONTROL "Enable control features"       OFF)
+option(OMNIKIT_BUILD_TESTS "Build the unit tests" ON)
 
-list(APPEND FEATURES "USE_CORE"     "core")
-list(APPEND FEATURES "USE_DRIVERS"  "drivers")
-list(APPEND FEATURES "USE_CONTROL"  "control")
+add_library(omnikit
+    src/omnikit.cpp
+)
 
-if(TEST_MODE)
-  message("Test mode is enabled")
-  add_subdirectory(examples)
-  return()
+add_library(omnikit::omnikit ALIAS omnikit)
+
+target_include_directories(omnikit
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
+
+target_compile_features(omnikit PUBLIC cxx_std_17)
+
+target_compile_options(omnikit PRIVATE
+    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+)
+
+if(OMNIKIT_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
 endif()
 
-add_subdirectory(core) 
-add_subdirectory(drivers) 
-add_subdirectory(control) 
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
+install(TARGETS omnikit
+    EXPORT omnikitTargets
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
-####################################################################
-##  The code was written with if to make it more understandable   ##
-####################################################################
+install(DIRECTORY include/omnikit
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
-# set(FEATURES)
-# list(LENGTH FEATURES LIST_LENGTH)
-# math(EXPR ADJUSTED_LENGTH "${LIST_LENGTH} - 2")
-# foreach(i RANGE 0 ${ADJUSTED_LENGTH} 2)
-#     list(GET FEATURES ${i} FEATURE)
-#     math(EXPR j "${i} + 1") 
-#     list(GET FEATURES ${j} DIR)
-#     if(${${FEATURE}})
-#         add_subdirectory(${DIR})
-#     endif()
-# endforeach()
+install(EXPORT omnikitTargets
+    FILE omnikitTargets.cmake
+    NAMESPACE omnikit::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/omnikit
+)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/omnikitConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/omnikitConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/omnikit
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/omnikitConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/omnikitConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/omnikitConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/omnikit
+)
+
+if(NOT TARGET uninstall)
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND}
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/omnikitUninstall.cmake
+        COMMENT "Uninstalling omnikit (removing installed files)..."
+    )
+endif()

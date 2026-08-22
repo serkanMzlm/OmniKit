@@ -1,0 +1,75 @@
+---
+# Clang-Tidy configuration file
+# Usage: clang-tidy <file> --config-file=.clang-tidy
+
+# Checks: comma-separated pattern string (must be a single string, NOT a YAML list)
+#   -*                              → disable all checks first
+#   clang-analyzer-*               → deep static analysis (null ptr, memory leaks, etc.)
+#   modernize-*                    → enforce modern C++ idioms (C++11/14/17)
+#   cert-*                         → CERT secure coding standard compliance
+#   cppcoreguidelines-*            → C++ Core Guidelines compliance
+#   bugprone-*                     → detect common bug-prone code patterns
+#   performance-*                  → flag performance anti-patterns
+#   readability-identifier-naming  → enforce naming conventions (configured below)
+#   readability-function-size      → flag overly long functions (see LineThreshold)
+#   -modernize-use-trailing-return-type → disable trailing return type enforcement (-> T)
+Checks: >
+  -*,
+  clang-analyzer-*,
+  modernize-*,
+  cert-*,
+  cppcoreguidelines-*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers
+
+
+# Only bugprone-* issues break the build. Everything else is a warning.
+WarningsAsErrors: 'bugprone-*'
+
+# Only analyze our own headers, not system or third-party ones.
+HeaderFilterRegex: 'include/omnikit/.*'
+
+CheckOptions:
+  # ── Function size ──────────────────────────────────────────────
+  - key: readability-function-size.LineThreshold
+    value: '80'
+
+  # ── Naming conventions ─────────────────────────────────────────
+  # Types (classes, structs, enums): CamelCase   -> LowPassFilter
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+
+  # Functions / methods: camelBack   -> computeAverage()
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+
+  # Local variables: lower_case   -> wheel_speed
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+
+  # Private/protected member variables: lower_case + trailing '_'  -> value_
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: '_'
+  - key: readability-identifier-naming.ProtectedMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: '_'
+
+  # Compile-time constants: UPPER_CASE   -> MAX_SPEED
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+
+  # Namespaces: lower_case   -> omnikit, math
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case

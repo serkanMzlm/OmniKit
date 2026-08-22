@@ -1,0 +1,1 @@
+message(STATUS "omnikit: tests are enabled, but no tests are defined yet.")

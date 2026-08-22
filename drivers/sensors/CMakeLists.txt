@@ -1,2 +1,0 @@
-add_subdirectory(barometer)
-add_subdirectory(imu)
