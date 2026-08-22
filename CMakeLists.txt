@@ -12,24 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(OMNIKIT_BUILD_TESTS "Build the unit tests" ON)
 
-add_library(omnikit
-    src/omnikit.cpp
-)
-
-add_library(omnikit::omnikit ALIAS omnikit)
-
-target_include_directories(omnikit
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
-
-target_compile_features(omnikit PUBLIC cxx_std_17)
-
-target_compile_options(omnikit PRIVATE
-    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
-    $<$<CXX_COMPILER_ID:MSVC>:/W4>
-)
+add_subdirectory(src/log)
 
 if(OMNIKIT_BUILD_TESTS)
     enable_testing()
@@ -38,14 +21,6 @@ endif()
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-
-install(TARGETS omnikit
-    EXPORT omnikitTargets
-    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
 
 install(DIRECTORY include/omnikit
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}

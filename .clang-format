@@ -14,4 +14,8 @@ BreakBeforeBraces: Attach
 SortIncludes: true
 IncludeBlocks: Regroup
 
+InsertNewlineAtEOF: true
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+
 Standard: c++17

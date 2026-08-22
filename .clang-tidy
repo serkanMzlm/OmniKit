@@ -1,18 +1,3 @@
----
-# Clang-Tidy configuration file
-# Usage: clang-tidy <file> --config-file=.clang-tidy
-
-# Checks: comma-separated pattern string (must be a single string, NOT a YAML list)
-#   -*                              → disable all checks first
-#   clang-analyzer-*               → deep static analysis (null ptr, memory leaks, etc.)
-#   modernize-*                    → enforce modern C++ idioms (C++11/14/17)
-#   cert-*                         → CERT secure coding standard compliance
-#   cppcoreguidelines-*            → C++ Core Guidelines compliance
-#   bugprone-*                     → detect common bug-prone code patterns
-#   performance-*                  → flag performance anti-patterns
-#   readability-identifier-naming  → enforce naming conventions (configured below)
-#   readability-function-size      → flag overly long functions (see LineThreshold)
-#   -modernize-use-trailing-return-type → disable trailing return type enforcement (-> T)
 Checks: >
   -*,
   clang-analyzer-*,
@@ -23,9 +8,12 @@ Checks: >
   performance-*,
   readability-*,
   -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard,
   -readability-identifier-length,
+  -readability-magic-numbers,
   -cppcoreguidelines-avoid-magic-numbers,
-  -readability-magic-numbers
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-macro-usage,
 
 
 # Only bugprone-* issues break the build. Everything else is a warning.

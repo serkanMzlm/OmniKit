@@ -94,7 +94,15 @@ format-fix:
 .PHONY: lint
 lint: configure
 	@$(INFO) "Running clang-tidy..."
-	@clang-tidy -p $(BUILD_DIR) $(CPP_FILES)
+	@clang-tidy -p $(BUILD_DIR) \
+		--extra-arg=-I/usr/include/c++/11 \
+		--extra-arg=-I/usr/include/x86_64-linux-gnu/c++/11 \
+		$(CPP_FILES)
+
+# .PHONY: lint
+# lint: configure
+# 	@$(INFO) "Running clang-tidy..."
+# 	@clang-tidy -p $(BUILD_DIR) $(CPP_FILES)
 
 .PHONY: lint-fix
 lint-fix: configure
