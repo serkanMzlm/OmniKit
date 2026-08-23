@@ -13,3 +13,4 @@ endfunction()
 find_package(Threads REQUIRED)
 
 omnikit_add_test(test_log test_log.cpp omnikit::log)
+omnikit_add_test(test_progress test_progress.cpp omnikit::progress)

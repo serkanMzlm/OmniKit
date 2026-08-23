@@ -9,9 +9,9 @@ PURPLE := \033[0;35m
 CYAN   := \033[0;36m
 RESET  := \033[0m
 
-INFO  = printf "$(CYAN)[INFO]$(RESET)  %s\n"
-OK    = printf "$(GREEN)[OK]$(RESET)    %s\n"
-WARN  = printf "$(YELLOW)[WARN]$(RESET)  %s\n"
+INFO  = printf "$(CYAN)[INFO]$(RESET) %s\n"
+OK    = printf "$(GREEN)[OK]$(RESET) %s\n"
+WARN  = printf "$(YELLOW)[WARN]$(RESET) %s\n"
 ERROR = printf "$(RED)[ERROR]$(RESET) %s\n"
 
 # Target directories

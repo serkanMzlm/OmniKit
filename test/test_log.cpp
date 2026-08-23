@@ -32,8 +32,6 @@ using omnikit::log::LogLevel;
 using omnikit::log::MockSink;
 
 void testForwardsEachLevel() {
-    std::printf("testForwardsEachLevel\n");
-
     auto sink = std::make_shared<MockSink>();
     Logger logger(sink);
 
@@ -53,10 +51,7 @@ void testForwardsEachLevel() {
     CHECK(records[3].message == "e");
 }
 
-// ── Test: sink can be swapped at runtime ────────────────────────
 void testSwapSink() {
-    std::printf("testSwapSink\n");
-
     auto first = std::make_shared<MockSink>();
     auto second = std::make_shared<MockSink>();
 
@@ -72,10 +67,7 @@ void testSwapSink() {
     CHECK(second->records()[0].message == "to second");
 }
 
-// ── Test: a null sink is ignored, not crashed on ────────────────
 void testNullSinkIsSafe() {
-    std::printf("testNullSinkIsSafe\n");
-
     Logger logger(nullptr);
     logger.info("safely ignored");
     CHECK(true);

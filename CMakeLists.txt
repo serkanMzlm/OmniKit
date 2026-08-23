@@ -13,6 +13,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(OMNIKIT_BUILD_TESTS "Build the unit tests" ON)
 
 add_subdirectory(src/log)
+add_subdirectory(src/progress)
 
 if(OMNIKIT_BUILD_TESTS)
     enable_testing()
