@@ -61,3 +61,7 @@ OmniKit/
 └── docs/
     └── api/
 ```
+
+```
+make lint-module MODULE=progress
+```

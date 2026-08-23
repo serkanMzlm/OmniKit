@@ -91,6 +91,11 @@ format-fix:
 	@clang-format -i $(CPP_FILES)
 	@$(OK) "Formatting done."
 
+# .PHONY: lint
+# lint: configure
+# 	@$(INFO) "Running clang-tidy..."
+# 	@clang-tidy -p $(BUILD_DIR) $(CPP_FILES)
+
 .PHONY: lint
 lint: configure
 	@$(INFO) "Running clang-tidy..."
@@ -99,15 +104,28 @@ lint: configure
 		--extra-arg=-I/usr/include/x86_64-linux-gnu/c++/11 \
 		$(CPP_FILES)
 
-# .PHONY: lint
-# lint: configure
-# 	@$(INFO) "Running clang-tidy..."
-# 	@clang-tidy -p $(BUILD_DIR) $(CPP_FILES)
-
 .PHONY: lint-fix
 lint-fix: configure
 	@$(INFO) "Running clang-tidy with --fix..."
 	@clang-tidy -p $(BUILD_DIR) --fix $(CPP_FILES)
+
+.PHONY: lint-module
+lint-module: configure
+	@if [ -z "$(MODULE)" ]; then \
+		$(ERROR) "Usage: make lint-module MODULE=<name>  (e.g. progress)"; \
+		exit 1; \
+	fi
+	@$(INFO) "Running clang-tidy on module '$(MODULE)'..."
+	@FILES=$$(find $(SRC_DIR)/$(MODULE) $(INCLUDE_DIR)/omnikit/$(MODULE) \
+		\( -name '*.cpp' -o -name '*.hpp' \) 2>/dev/null); \
+	if [ -z "$$FILES" ]; then \
+		$(ERROR) "No files found for module '$(MODULE)'."; \
+		exit 1; \
+	fi; \
+	clang-tidy -p $(BUILD_DIR) \
+		--extra-arg=-I/usr/include/c++/11 \
+		--extra-arg=-I/usr/include/x86_64-linux-gnu/c++/11 \
+		$$FILES
 
 .PHONY: quality
 quality: format-check lint
