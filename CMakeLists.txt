@@ -15,6 +15,7 @@ option(OMNIKIT_BUILD_TESTS "Build the unit tests" ON)
 add_subdirectory(src/log)
 add_subdirectory(src/progress)
 add_subdirectory(src/geometry)
+add_subdirectory(src/time)
 
 if(OMNIKIT_BUILD_TESTS)
     enable_testing()
