@@ -167,6 +167,7 @@ help:
 	@printf "    $(CYAN)format$(RESET)         Check formatting (no changes)\n"
 	@printf "    $(CYAN)format-fix$(RESET)     Auto-format sources\n"
 	@printf "    $(CYAN)lint$(RESET)           Run clang-tidy\n"
+	@printf "    $(CYAN)lint-module$(RESET)    Run clang-tidy on one module (MODULE=name)\n"
 	@printf "    $(CYAN)lint-fix$(RESET)       Run clang-tidy with --fix\n"
 	@printf "    $(CYAN)quality$(RESET)        format-check + lint\n"
 	@printf "\n"
