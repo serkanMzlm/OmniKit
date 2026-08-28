@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <cstdint>
 
@@ -26,7 +26,7 @@ public:
     double frequency();
 
 private:
-    uint64_t last_;  // reference timestamp in nanoseconds
+    uint64_t last_; // reference timestamp in nanoseconds
 };
 
 /// @brief Current steady-clock time in nanoseconds.
@@ -41,4 +41,4 @@ uint64_t currentTimeMs();
 /// @brief Current steady-clock time in seconds.
 uint64_t currentTimeSec();
 
-}  // namespace omnikit::time
+} // namespace omnikit::time

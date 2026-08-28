@@ -1,10 +1,9 @@
-#include <chrono>
-#include <thread>
-#include <string>
-
 #include "omnikit/time/timer.hpp"
-
 #include "test_framework.hpp"
+
+#include <chrono>
+#include <string>
+#include <thread>
 
 using omnikit::time::currentTimeMs;
 using omnikit::time::currentTimeNs;
@@ -16,7 +15,7 @@ namespace {
 void sleepMs(int ms) {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
-} 
+} // namespace
 
 void test_toc_measures_elapsed() {
     TicToc timer;
@@ -31,7 +30,7 @@ void test_toc_measures_elapsed() {
 void test_frequency() {
     TicToc timer;
     timer.tic();
-    sleepMs(100);          
+    sleepMs(100);
     const double hz = timer.frequency();
 
     CHECK(hz > 2.0);
