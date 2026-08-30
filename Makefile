@@ -91,11 +91,6 @@ format-fix:
 	@clang-format -i $(CPP_FILES)
 	@$(OK) "Formatting done."
 
-# .PHONY: lint
-# lint: configure
-# 	@$(INFO) "Running clang-tidy..."
-# 	@clang-tidy -p $(BUILD_DIR) $(CPP_FILES)
-
 .PHONY: lint
 lint: configure
 	@$(INFO) "Running clang-tidy..."
@@ -128,7 +123,7 @@ lint-module: configure
 		$$FILES
 
 .PHONY: quality
-quality: format-check lint
+quality: format lint
 
 .PHONY: clean
 clean:
@@ -169,7 +164,7 @@ help:
 	@printf "    $(CYAN)lint$(RESET)           Run clang-tidy\n"
 	@printf "    $(CYAN)lint-module$(RESET)    Run clang-tidy on one module (MODULE=name)\n"
 	@printf "    $(CYAN)lint-fix$(RESET)       Run clang-tidy with --fix\n"
-	@printf "    $(CYAN)quality$(RESET)        format-check + lint\n"
+	@printf "    $(CYAN)quality$(RESET)        format + lint\n"
 	@printf "\n"
 	@printf "$(BLUE)  Info:$(RESET)\n"
 	@printf "    $(CYAN)info$(RESET)           Show project info\n"

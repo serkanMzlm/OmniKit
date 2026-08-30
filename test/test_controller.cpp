@@ -1,12 +1,11 @@
-#include "omnikit/control/controller.hpp"
-#include "omnikit/control/pid.hpp"
 #include "framework.hpp"
+#include "omnikit/controller/pid.hpp"
 
 #include <cmath>
 #include <memory>
 #include <string>
 
-using namespace omnikit::control;
+using namespace omnikit::controller;
 
 namespace {
 /// Approximate equality for doubles (floating-point safe).
@@ -23,7 +22,7 @@ int main() {
     const double dt = 0.1;
 
     for (int i = 0; i < 500; ++i) {
-        const double control = pid.update(setpoint, position, dt);
+        const double control = pid.update(Setpoint{setpoint}, Measurement{position}, DeltaTime{dt});
         position += control * dt; // very simple integrator "plant"
     }
 

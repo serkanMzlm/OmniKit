@@ -1,5 +1,5 @@
-#include "omnikit/math/math.hpp"
 #include "framework.hpp"
+#include "omnikit/math/math.hpp"
 
 #include <cmath>
 #include <string>

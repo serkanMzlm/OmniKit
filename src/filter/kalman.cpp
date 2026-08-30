@@ -2,29 +2,25 @@
 
 namespace omnikit::filter {
 
-template <int N, int M, int L>
-void KalmanFilter<N, M, L>::predict() {
+template <int N, int M, int L> void KalmanFilter<N, M, L>::predict() {
     // x⁻ = F x
     x_ = F_ * x_;
     // P⁻ = F P Fᵀ + Q
     P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
-template <int N, int M, int L>
-void KalmanFilter<N, M, L>::predict(const ControlVec& u) {
+template <int N, int M, int L> void KalmanFilter<N, M, L>::predict(const ControlVec& u) {
     // x⁻ = F x + B u
     x_ = F_ * x_ + B_ * u;
     P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
-template <int N, int M, int L>
-void KalmanFilter<N, M, L>::update(const MeasVec& z) {
+template <int N, int M, int L> void KalmanFilter<N, M, L>::update(const MeasVec& z) {
     // Innovation: y = z - H x⁻
     y_ = z - H_ * x_;
 
     // Innovation covariance: S = H P⁻ Hᵀ + R
-    const Eigen::Matrix<double, M, M> S =
-        H_ * P_ * H_.transpose() + R_;
+    const Eigen::Matrix<double, M, M> S = H_ * P_ * H_.transpose() + R_;
 
     // Kalman gain: K = P⁻ Hᵀ S⁻¹
     const Gain K = P_ * H_.transpose() * S.inverse();

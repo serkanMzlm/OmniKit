@@ -1,12 +1,38 @@
-name: CI
+name: C++ Build and Test CI
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, development ]
+    branches: [ main ]
 
 jobs:
+  commit-check:
+    name: Validate Commit Message Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Commit Message Convention
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          echo "Last Commit Message: $COMMIT_MSG"
+          
+          # Regex: (feat|fix|update|docs|style|refactor|test|chore): Message
+          REGEX="^(feat|fix|update|docs|style|refactor|test|chore): .+"
+          
+          if [[ ! "$COMMIT_MSG" =~ $REGEX ]]; then
+            echo "::error::Invalid Commit Message Format!"
+            echo "Commit message must follow the '<type>: <description>' format."
+            echo "Examples: 'update: math library', 'fix: vector index overflow', 'feat: add low pass filter'"
+            exit 1
+          else
+            echo "Commit message format is valid."
+          fi
+          
   build-and-test:
     runs-on: ubuntu-latest
 
@@ -20,7 +46,7 @@ jobs:
           sudo apt-get install -y cmake g++ libeigen3-dev clang-format clang-tidy
 
       - name: Format check
-        run: make format
+        run: make quality
 
       - name: Build
         run: make build

@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <Eigen/Dense>
 
@@ -14,19 +14,18 @@ namespace omnikit::filter {
 /// @tparam N  state dimension
 /// @tparam M  measurement dimension
 /// @tparam L  control-input dimension (0 if no control input)
-template <int N, int M, int L = 0>
-class KalmanFilter {
+template <int N, int M, int L = 0> class KalmanFilter {
 public:
-    using StateVec   = Eigen::Matrix<double, N, 1>;
-    using MeasVec    = Eigen::Matrix<double, M, 1>;
+    using StateVec = Eigen::Matrix<double, N, 1>;
+    using MeasVec = Eigen::Matrix<double, M, 1>;
     using ControlVec = Eigen::Matrix<double, L, 1>;
 
-    using StateMat   = Eigen::Matrix<double, N, N>;
-    using MeasMat    = Eigen::Matrix<double, M, N>;
+    using StateMat = Eigen::Matrix<double, N, N>;
+    using MeasMat = Eigen::Matrix<double, M, N>;
     using ControlMat = Eigen::Matrix<double, N, L>;
-    using ProcNoise  = Eigen::Matrix<double, N, N>;
-    using MeasNoise  = Eigen::Matrix<double, M, M>;
-    using Gain       = Eigen::Matrix<double, N, M>;
+    using ProcNoise = Eigen::Matrix<double, N, N>;
+    using MeasNoise = Eigen::Matrix<double, M, M>;
+    using Gain = Eigen::Matrix<double, N, M>;
 
     KalmanFilter() = default;
 
@@ -77,11 +76,11 @@ public:
 
 private:
     // Model matrices.
-    StateMat   F_ = StateMat::Identity();
+    StateMat F_ = StateMat::Identity();
     ControlMat B_ = ControlMat::Zero();
-    MeasMat    H_ = MeasMat::Zero();
-    ProcNoise  Q_ = ProcNoise::Identity();
-    MeasNoise  R_ = MeasNoise::Identity();
+    MeasMat H_ = MeasMat::Zero();
+    ProcNoise Q_ = ProcNoise::Identity();
+    MeasNoise R_ = MeasNoise::Identity();
 
     // Estimate.
     StateVec x_ = StateVec::Zero();

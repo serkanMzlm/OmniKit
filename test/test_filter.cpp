@@ -1,11 +1,10 @@
-#include <cmath>
-#include <string>
-
+#include "framework.hpp"
 #include "omnikit/filter/complementary.hpp"
 #include "omnikit/filter/highpass.hpp"
 #include "omnikit/filter/lowpass.hpp"
 
-#include "framework.hpp"
+#include <cmath>
+#include <string>
 
 using omnikit::filter::ComplementaryFilter;
 using omnikit::filter::HighPassFilter2p;
@@ -15,10 +14,10 @@ namespace {
 bool close(double a, double b, double tol) {
     return std::fabs(a - b) < tol;
 }
-}  // namespace
+} // namespace
 
 void test_lpf_settles() {
-    LowPassFilter2p lpf(100.0, 10.0);  // 100 Hz sample, 10 Hz cutoff
+    LowPassFilter2p lpf(100.0, 10.0); // 100 Hz sample, 10 Hz cutoff
 
     double out = 0.0;
     for (int i = 0; i < 200; ++i) {
@@ -57,7 +56,7 @@ void test_complementary_fusion() {
 
     double est = 0.0;
     for (int i = 0; i < 10; ++i) {
-        est = filter.update(1.0, 0.1, 0.1);  // dt = 0.1
+        est = filter.update(1.0, 0.1, 0.1); // dt = 0.1
     }
 
     CHECK(est > 0.0);

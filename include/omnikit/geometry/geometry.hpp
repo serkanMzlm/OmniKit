@@ -3,21 +3,17 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-#define F2P(x) (1000 / x)
+constexpr double f2p(double x) {
+    return 1000.0 / x;
+}
 
-#ifndef DEG2RAD
-#define DEG2RAD(x) ((x) * (M_PI / 180.0f))
-#endif
-#ifndef RAD2DEG
-#define RAD2DEG(x) ((x) * (180.0f / M_PI))
-#endif
+constexpr double deg2rad(double x) {
+    return x * (M_PI / 180.0);
+}
 
-#ifndef DEG_TO_RAD
-#define DEG_TO_RAD (M_PI / 180.0f)
-#endif
-#ifndef RAD_TO_DEG
-#define RAD_TO_DEG (180.0f / M_PI)
-#endif
+constexpr double rad2deg(double x) {
+    return x * (180.0 / M_PI);
+}
 
 namespace omnikit::geometry {
 

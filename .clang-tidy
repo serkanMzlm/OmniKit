@@ -7,14 +7,10 @@ Checks: >
   bugprone-*,
   performance-*,
   readability-*,
+  hicpp-*,
+  misc-*,
   -modernize-use-trailing-return-type,
-  -modernize-use-nodiscard,
   -readability-identifier-length,
-  -readability-magic-numbers,
-  -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-avoid-non-const-global-variables,
-  -cppcoreguidelines-macro-usage,
-
 
 # Only bugprone-* issues break the build. Everything else is a warning.
 WarningsAsErrors: 'bugprone-*'
@@ -23,11 +19,9 @@ WarningsAsErrors: 'bugprone-*'
 HeaderFilterRegex: 'include/omnikit/.*'
 
 CheckOptions:
-  # ── Function size ──────────────────────────────────────────────
   - key: readability-function-size.LineThreshold
-    value: '80'
+    value: '100'
 
-  # ── Naming conventions ─────────────────────────────────────────
   # Types (classes, structs, enums): CamelCase   -> LowPassFilter
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
@@ -55,9 +49,23 @@ CheckOptions:
     value: '_'
 
   # Compile-time constants: UPPER_CASE   -> MAX_SPEED
-  - key: readability-identifier-naming.ConstantCase
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.StaticConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantCase
     value: UPPER_CASE
 
+  # Local const values are NOT compile-time constants -> lower_case
+  - key: readability-identifier-naming.LocalConstantCase
+    value: lower_case
+  - key: readability-identifier-naming.ConstantParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.ConstantMemberCase
+    value: lower_case
+    
   # Namespaces: lower_case   -> omnikit, math
   - key: readability-identifier-naming.NamespaceCase
     value: lower_case

@@ -1,5 +1,5 @@
-#include "omnikit/progress/progress_bar.hpp"
 #include "framework.hpp"
+#include "omnikit/progress/progress_bar.hpp"
 
 #include <memory>
 #include <string>

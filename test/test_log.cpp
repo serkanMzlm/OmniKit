@@ -1,6 +1,6 @@
+#include "framework.hpp"
 #include "omnikit/log/logger.hpp"
 #include "omnikit/log/sink.hpp"
-#include "framework.hpp"
 
 #include <memory>
 #include <string>
