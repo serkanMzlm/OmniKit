@@ -17,6 +17,8 @@ add_subdirectory(src/progress)
 add_subdirectory(src/geometry)
 add_subdirectory(src/time)
 add_subdirectory(src/math)
+add_subdirectory(src/control)
+add_subdirectory(src/filter)
 
 if(OMNIKIT_BUILD_TESTS)
     enable_testing()

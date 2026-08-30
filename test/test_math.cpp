@@ -1,9 +1,8 @@
+#include "omnikit/math/math.hpp"
+#include "framework.hpp"
+
 #include <cmath>
 #include <string>
-
-#include "omnikit/math/math.hpp"
-
-#include "test_framework.hpp"
 
 using omnikit::math::constrain;
 using omnikit::math::fastInverseSqrt;
@@ -18,7 +17,7 @@ void test_fast_inverse_sqrt() {
         const float exact = 1.0F / std::sqrt(x);
         const float relative_error = std::fabs(approx - exact) / exact;
 
-        CHECK(relative_error < 0.02F);  // within 2%
+        CHECK(relative_error < 0.02F); // within 2%
     }
 }
 

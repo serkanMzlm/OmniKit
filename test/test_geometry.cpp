@@ -1,18 +1,11 @@
 #include "omnikit/geometry/transformations.hpp"
-#include "test_framework.hpp"
+#include "framework.hpp"
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <cmath>
 
-using omnikit::geometry::Axis;
-using omnikit::geometry::reflection;
-using omnikit::geometry::rotationX;
-using omnikit::geometry::rotationY;
-using omnikit::geometry::rotationZ;
-using omnikit::geometry::scaleMatrix;
-using omnikit::geometry::shear;
-using omnikit::geometry::translationMatrix;
+using namespace omnikit::geometry;
 
 namespace {
 /// Applies a 4x4 homogeneous transform to a 3D point.
