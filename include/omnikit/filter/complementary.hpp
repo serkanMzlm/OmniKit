@@ -2,6 +2,13 @@
 
 namespace omnikit::filter {
 
+struct FastInput {
+    double value;
+};
+struct SlowInput {
+    double value;
+};
+
 /// @brief A complementary filter fusing a fast (integrated) signal with
 ///        a slow (absolute) signal. Classic use: gyro + accelerometer
 ///        for tilt estimation.
@@ -18,12 +25,12 @@ public:
     /// @param slow_input  absolute reference (e.g. accelerometer angle)
     /// @param dt          time step in seconds
     /// @return the fused estimate
-    double update(double fast_input, double slow_input, double dt);
+    double update(FastInput fast_input, SlowInput slow_input, double dt);
 
     /// @brief Resets the estimate to a starting value.
     void reset(double value);
 
-    double getEstimate() const { return estimate_; }
+    [[nodiscard]] double getEstimate() const { return estimate_; }
 
 private:
     double alpha_;

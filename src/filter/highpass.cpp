@@ -3,10 +3,10 @@
 namespace omnikit::filter {
 
 HighPassFilter2p::HighPassFilter2p(double sample_freq, double cutoff_freq)
-    : lpf_(sample_freq, cutoff_freq) {}
+    : lpf_(SampleFreq{sample_freq}, CutoffFreq{cutoff_freq}) {}
 
 void HighPassFilter2p::setCutoffFrequency(double sample_freq, double cutoff_freq) {
-    lpf_.setCutoffFrequency(sample_freq, cutoff_freq);
+    lpf_.setCutoffFrequency(SampleFreq{sample_freq}, CutoffFreq{cutoff_freq});
 }
 
 double HighPassFilter2p::apply(double sample) {

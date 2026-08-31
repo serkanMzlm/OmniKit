@@ -24,7 +24,7 @@ public:
     double reset(double sample);
 
     double getCutoffFreq() const { return lpf_.getCutoffFreq(); }
-    double getSampleFreq() const { return lpf_.getSampleFreq(); }
+    [[nodiscard]] double getSampleFreq() const { return lpf_.getSampleFreq(); }
 
 private:
     LowPassFilter2p lpf_;

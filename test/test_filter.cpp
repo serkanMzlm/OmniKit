@@ -6,9 +6,7 @@
 #include <cmath>
 #include <string>
 
-using omnikit::filter::ComplementaryFilter;
-using omnikit::filter::HighPassFilter2p;
-using omnikit::filter::LowPassFilter2p;
+using namespace omnikit::filter;
 
 namespace {
 bool close(double a, double b, double tol) {
@@ -17,7 +15,7 @@ bool close(double a, double b, double tol) {
 } // namespace
 
 void test_lpf_settles() {
-    LowPassFilter2p lpf(100.0, 10.0); // 100 Hz sample, 10 Hz cutoff
+    LowPassFilter2p lpf(SampleFreq{100.0}, CutoffFreq{10.0}); // 100 Hz sample, 10 Hz cutoff
 
     double out = 0.0;
     for (int i = 0; i < 200; ++i) {
@@ -27,7 +25,7 @@ void test_lpf_settles() {
 }
 
 void test_lpf_smooths() {
-    LowPassFilter2p lpf(100.0, 5.0);
+    LowPassFilter2p lpf(SampleFreq{100.0}, CutoffFreq{5.0});
     lpf.reset(0.0);
 
     double max_out = 0.0;
@@ -56,7 +54,7 @@ void test_complementary_fusion() {
 
     double est = 0.0;
     for (int i = 0; i < 10; ++i) {
-        est = filter.update(1.0, 0.1, 0.1); // dt = 0.1
+        est = filter.update(FastInput{1.0}, SlowInput{0.1}, 0.1); // dt = 0.1
     }
 
     CHECK(est > 0.0);

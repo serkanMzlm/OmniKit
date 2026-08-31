@@ -2,6 +2,13 @@
 
 namespace omnikit::filter {
 
+struct SampleFreq {
+    double value;
+};
+struct CutoffFreq {
+    double value;
+};
+
 /// @brief A second-order (biquad) Butterworth low-pass filter.
 ///        Attenuates frequencies above the cutoff, passes lower ones.
 class LowPassFilter2p {
@@ -11,12 +18,12 @@ public:
     /// @brief Constructs and configures the filter.
     /// @param sample_freq  sampling frequency in Hz
     /// @param cutoff_freq  cutoff frequency in Hz
-    LowPassFilter2p(double sample_freq, double cutoff_freq);
+    LowPassFilter2p(SampleFreq sample_freq, CutoffFreq cutoff_freq);
 
     /// @brief Sets (or changes) the cutoff, recomputing coefficients.
     /// @param sample_freq  sampling frequency in Hz
     /// @param cutoff_freq  cutoff frequency in Hz (0 disables filtering)
-    void setCutoffFrequency(double sample_freq, double cutoff_freq);
+    void setCutoffFrequency(SampleFreq sample_freq, CutoffFreq cutoff_freq);
 
     /// @brief Filters one sample and returns the filtered value.
     double apply(double sample);
@@ -33,8 +40,8 @@ public:
     /// @brief Disables filtering: apply() becomes a pass-through.
     void disable();
 
-    double getCutoffFreq() const { return cutoff_freq_; }
-    double getSampleFreq() const { return sample_freq_; }
+    [[nodiscard]] double getCutoffFreq() const { return cutoff_freq_.value; }
+    [[nodiscard]] double getSampleFreq() const { return sample_freq_.value; }
 
     /// @brief Magnitude of the filter's response at a given frequency.
     /// @param frequency  the frequency in Hz
@@ -42,8 +49,8 @@ public:
     double getMagnitudeResponse(double frequency) const;
 
 private:
-    double sample_freq_ = 0.0;
-    double cutoff_freq_ = 0.0;
+    SampleFreq sample_freq_ = {0.0};
+    CutoffFreq cutoff_freq_ = {0.0};
 
     // Filter coefficients.
     double b0_ = 1.0;

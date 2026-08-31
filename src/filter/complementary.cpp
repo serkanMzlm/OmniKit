@@ -6,11 +6,11 @@ namespace omnikit::filter {
 
 ComplementaryFilter::ComplementaryFilter(double alpha) : alpha_(math::constrain(alpha, 0.0, 1.0)) {}
 
-double ComplementaryFilter::update(double fast_input, double slow_input, double dt) {
+double ComplementaryFilter::update(FastInput fast_input, SlowInput slow_input, double dt) {
     // Integrate the fast signal onto the previous estimate, then blend
     // with the slow signal to correct long-term drift.
-    const double predicted = estimate_ + fast_input * dt;
-    estimate_ = alpha_ * predicted + (1.0 - alpha_) * slow_input;
+    const double predicted = estimate_ + fast_input.value * dt;
+    estimate_ = alpha_ * predicted + (1.0 - alpha_) * slow_input.value;
     return estimate_;
 }
 

@@ -2,21 +2,17 @@
 
 #include <cmath>
 
-namespace {
-constexpr double PI = 3.14159265358979323846;
-}
-
 namespace omnikit::filter {
 
-LowPassFilter2p::LowPassFilter2p(double sample_freq, double cutoff_freq) {
+LowPassFilter2p::LowPassFilter2p(SampleFreq sample_freq, CutoffFreq cutoff_freq) {
     setCutoffFrequency(sample_freq, cutoff_freq);
 }
 
-void LowPassFilter2p::setCutoffFrequency(double sample_freq, double cutoff_freq) {
+void LowPassFilter2p::setCutoffFrequency(SampleFreq sample_freq, CutoffFreq cutoff_freq) {
     sample_freq_ = sample_freq;
     cutoff_freq_ = cutoff_freq;
 
-    if (cutoff_freq_ <= 0.0 || sample_freq_ <= 0.0) {
+    if (cutoff_freq_.value <= 0.0 || sample_freq_.value <= 0.0) {
         b0_ = 1.0;
         b1_ = 0.0;
         b2_ = 0.0;
@@ -25,15 +21,15 @@ void LowPassFilter2p::setCutoffFrequency(double sample_freq, double cutoff_freq)
         return;
     }
 
-    const double fr = sample_freq_ / cutoff_freq_;
-    const double ohm = std::tan(PI / fr);
-    const double c = 1.0 + 2.0 * std::cos(PI / 4.0) * ohm + ohm * ohm;
+    const double fr = sample_freq_.value / cutoff_freq_.value;
+    const double ohm = std::tan(M_PI / fr);
+    const double c = 1.0 + 2.0 * std::cos(M_PI / 4.0) * ohm + ohm * ohm;
 
     b0_ = ohm * ohm / c;
     b1_ = 2.0 * b0_;
     b2_ = b0_;
     a1_ = 2.0 * (ohm * ohm - 1.0) / c;
-    a2_ = (1.0 - 2.0 * std::cos(PI / 4.0) * ohm + ohm * ohm) / c;
+    a2_ = (1.0 - 2.0 * std::cos(M_PI / 4.0) * ohm + ohm * ohm) / c;
 }
 
 double LowPassFilter2p::apply(double sample) {
@@ -73,7 +69,7 @@ double LowPassFilter2p::getMagnitudeResponse(double frequency) const {
     // Evaluate the transfer function magnitude at the given frequency.
     // z = e^(j*w), w = 2*pi*frequency/sample_freq. |H(z)| is computed
     // from the real/imaginary parts of numerator and denominator.
-    const double w = 2.0 * PI * frequency / sample_freq_;
+    const double w = 2.0 * M_PI * frequency / sample_freq_.value;
     const double cos_w = std::cos(w);
     const double cos_2w = std::cos(2.0 * w);
     const double sin_w = std::sin(w);
